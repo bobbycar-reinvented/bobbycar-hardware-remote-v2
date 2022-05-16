@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name "analog_stick")(type "KiCad")(uri "${KIPRJMOD}/analog_stick.pretty")(options "")(descr ""))
+  (lib (name "usb_c_bobby")(type "KiCad")(uri "${KIPRJMOD}/usb_c_bobby.pretty")(options "")(descr ""))
+)
