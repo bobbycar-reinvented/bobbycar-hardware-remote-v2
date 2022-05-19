@@ -1,0 +1,3 @@
+[submodule "kicad/wch-kicad-lbr"]
+	path = kicad/wch-kicad-lbr
+	url = git@github.com:sad-electronics/wch-kicad-lbr.git
