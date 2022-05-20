@@ -3,4 +3,5 @@
   (lib (name "wch-usb-pd")(type "KiCad")(uri "${KIPRJMOD}/wch-kicad-lbr/symbols/wch-usb-pd.kicad_sym")(options "")(descr ""))
   (lib (name "wch-mcu")(type "KiCad")(uri "${KIPRJMOD}/wch-kicad-lbr/symbols/wch-mcu.kicad_sym")(options "")(descr ""))
   (lib (name "wch-bluetooth")(type "KiCad")(uri "${KIPRJMOD}/wch-kicad-lbr/symbols/wch-bluetooth.kicad_sym")(options "")(descr ""))
+  (lib (name "SS8050")(type "Legacy")(uri "${KIPRJMOD}/SS8050.lib")(options "")(descr ""))
 )
