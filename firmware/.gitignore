@@ -1,0 +1,11 @@
+desktop.ini
+./build
+./build_*
+./CMakeLists.txt.user*
+./cmake-build-debug
+./platformio.pro*
+./sdkconfig.old*
+/.idea
+/.ccache
+/main/certs/*
+/.vscode/*
