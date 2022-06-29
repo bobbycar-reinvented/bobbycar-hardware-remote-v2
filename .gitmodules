@@ -43,3 +43,15 @@
 [submodule "firmware/components/espwifistack"]
 	path = firmware/components/espwifistack
 	url = ../../0xFEEDC0DE64/espwifistack.git
+[submodule "firmware/esp-protocols"]
+	path = firmware/esp-protocols
+	url = ../../0xFEEDC0DE64/esp-protocols.git
+[submodule "firmware/components/date"]
+	path = firmware/components/date
+	url = ../../0xFEEDC0DE64/date.git
+[submodule "firmware/components/QRCode-esp32"]
+	path = firmware/components/QRCode-esp32
+	url = ../../bobbycar-graz/QRCode-esp32.git
+[submodule "firmware/components/cxx-ring-buffer"]
+	path = firmware/components/cxx-ring-buffer
+	url = ../../0xFEEDC0DE64/cxx-ring-buffer.git
