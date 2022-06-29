@@ -17,19 +17,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_DISABLE_CONCEPTS=1)
 
-# set(EXTRA_COMPONENT_DIRS
-#     esp-protocols/components
-# )
+set(EXTRA_COMPONENT_DIRS
+    esp-protocols/components
+)
 
 project(${APP_NAME})
 
 set(expected_build_folder "${CMAKE_CURRENT_SOURCE_DIR}/build")
-file(READ_SYMLINK "${expected_build_folder}" expected_build_folder_resolved)
-if(NOT IS_ABSOLUTE "${expected_build_folder_resolved}")
-  get_filename_component(dir "${expected_build_folder}" DIRECTORY)
-  set(expected_build_folder_resolved "${dir}/${expected_build_folder_resolved}")
-endif()
-
-if (NOT PROJECT_BINARY_DIR STREQUAL "${expected_build_folder}" AND NOT PROJECT_BINARY_DIR STREQUAL "${expected_build_folder_resolved}")
-    message(FATAL_ERROR "building in ${PROJECT_BINARY_DIR} is not supported, you have to build in ${expected_build_folder} or ${expected_build_folder_resolved}")
-endif()
