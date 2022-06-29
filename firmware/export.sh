@@ -7,4 +7,6 @@ then
     return
 fi
 
+export PATH=$PATH:$(pwd)/tools
+
 . ${BOBBY_ROOT}/esp-idf/export.sh
