@@ -1,6 +1,11 @@
 #include "taskmanager.h"
 
-#include "esp_log.h"
+// esp-idf includes
+#include <esp_log.h>
+
+// local includes
+#include "analog_sticks.h"
+#include "debugconsole.h"
 
 using namespace std::chrono_literals;
 
@@ -10,10 +15,9 @@ constexpr const char * const TAG = "TASKS";
 
 void not_needed() {}
 
-void debug() { ESP_LOGI(TAG, "Debug text"); }
-
 SchedulerTask schedulerTasksArr[] {
-    SchedulerTask { "debug_log", not_needed, debug, 1s }
+    SchedulerTask { "debugconsole", init_debugconsole, update_debugconsole, 50ms },
+    SchedulerTask { "analog_sticks", analog_sticks::init, analog_sticks::update, 30ms }
 };
 } // namespace
 

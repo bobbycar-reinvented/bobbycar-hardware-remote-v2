@@ -14,7 +14,10 @@ constexpr const char * const TAG = "BOBBY_REMOTE";
 #include <screenmanager.h>
 
 // local includes
+#include "analog_sticks.h"
 #include "screens.h"
+#include "screens/calibrateanalogsticksscreen.h"
+#include "screens/statusscreen.h"
 #include "settings.h"
 #include "taskmanager.h"
 
@@ -34,9 +37,18 @@ extern "C" void app_main()
 
     for (const auto &task : schedulerTasks)
     {
+        ESP_LOGI(TAG, "Init task %s", task.name());
         bootLabel.redraw(task.name());
         task.setup();
     }
+
+    // check if analog sticks are mapped
+    if (analog_sticks::needs_calibration())
+    {
+        espgui::switchScreen<CalibrateAnalogStickScreen>(true);
+    }
+    else
+        espgui::switchScreen<StatusScreen>();
 
     while (true)
     {
