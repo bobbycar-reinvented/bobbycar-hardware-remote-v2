@@ -1,14 +1,18 @@
 #include "mainmenu.h"
 
 // 3rdparty lib includes
+#include <actions/pushscreenaction.h>
 #include <menuitem.h>
 #include <screenmanager.h>
 #include <tftinstance.h>
 
 // local includes
 #include "icons/reboot.h"
+#include "icons/settings.h"
+#include "menus/settingsmenu.h"
 
 namespace {
+constexpr char TEXT_SETTINGS[] = "Settings";
 constexpr char TEXT_REBOOT[] = "Reboot";
 
 class RebootAction : public virtual espgui::ActionInterface
@@ -37,6 +41,7 @@ MainMenu::MainMenu()
 {
     using namespace espgui;
 
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_SETTINGS>, StaticMenuItemIcon<&bobbyicons::settings>, PushScreenAction<SettingsMenu>>>();
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_REBOOT>, StaticMenuItemIcon<&bobbyicons::reboot>, RebootAction>>();
 }
 

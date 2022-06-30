@@ -15,6 +15,9 @@
 #include <fmt/core.h>
 #include <makearray.h>
 
+// local includes
+#include "enums.h"
+
 constexpr const auto INPUT_MAPPING_NONE = std::numeric_limits<uint8_t>::max();
 
 using namespace espconfig;
@@ -247,6 +250,54 @@ public:
         }
     } rightStickYMiddleCal;
 
+    struct : ConfigWrapper<uint16_t>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "deadband"; }
+        uint16_t defaultValue() const override final { return 200; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final
+        {
+            return MinMaxValue<uint16_t, 0, 4095>(value);
+        }
+    } analogDeadband;
+
+    struct : ConfigWrapper<bool>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "invertLeftX"; }
+        bool defaultValue() const override final { return false; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } invertLeftX;
+    struct : ConfigWrapper<bool>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "invertLeftY"; }
+        bool defaultValue() const override final { return false; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } invertLeftY;
+    struct : ConfigWrapper<bool>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "invertRightX"; }
+        bool defaultValue() const override final { return false; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } invertRightX;
+    struct : ConfigWrapper<bool>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "invertRightY"; }
+        bool defaultValue() const override final { return false; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } invertRightY;
+
+    struct : ConfigWrapper<AnalogStickMode>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "analogMode"; }
+        AnalogStickMode defaultValue() const override final { return AnalogStickMode::LEFT_ONLY; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } analogStickMode;
+
     template<typename T>
     void callForEveryConfig(T &&callable)
     {
@@ -279,5 +330,17 @@ public:
         REGISTER_CONFIG(rightStickYStartCal)
         REGISTER_CONFIG(rightStickYMiddleCal)
         REGISTER_CONFIG(rightStickYEndCal)
+
+        // analog deadband
+        REGISTER_CONFIG(analogDeadband)
+
+        // invert
+        REGISTER_CONFIG(invertLeftX)
+        REGISTER_CONFIG(invertLeftY)
+        REGISTER_CONFIG(invertRightX)
+        REGISTER_CONFIG(invertRightY)
+
+        // analog stick mode
+        REGISTER_CONFIG(analogStickMode)
     }
 };

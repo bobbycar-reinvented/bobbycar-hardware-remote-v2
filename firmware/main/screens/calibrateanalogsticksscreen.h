@@ -25,6 +25,7 @@ private:
     espgui::Label m_label_lefty_stick {10, label_start + 35};
     espgui::Label m_label_rightx_stick{10, label_start + 60};
     espgui::Label m_label_righty_stick{10, label_start + 85};
+    espgui::Label m_label_status      {10, label_start + 110};
 
     uint16_t m_left_x_min;
     uint16_t m_left_x_max;

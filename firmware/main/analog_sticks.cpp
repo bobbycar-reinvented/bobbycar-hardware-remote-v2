@@ -11,6 +11,7 @@ constexpr const char * const TAG = "ANALOG_STICKS";
 #include "pins.h"
 #include "screenmanager.h"
 #include "settings.h"
+#include "utils.h"
 
 namespace analog_sticks {
 
@@ -119,15 +120,48 @@ void update()
     }
 
     // apply calibration
-    if (!needs_calibration())
+    if (!needs_calibration() && configs_are_valid())
     {
-        // calibration: left_x_min, left_x_max, left_x_middle, left_y_min, left_y_max, left_y_middle
-        // calibration: right_x_min, right_x_max, right_x_middle, right_y_min, right_y_max, right_y_middle
-        // configs.deadband => apply to both sticks, if value is in deadband, set to 0, otherwise apply range - deadband
-        // map those to x => -1000 to 1000 and y => -1000 to 1000
-
-        // ToDo: actually write the code
+        if (left_stick.raw_x)
+        {
+            left_stick.x = utils::mapAnalogStick(*configs.leftStickXMiddleCal.value(),
+                                                 *configs.leftStickXStartCal.value(),
+                                                 *configs.leftStickXEndCal.value(),
+                                                 *left_stick.raw_x) * (configs.invertLeftX.value() ? -1 : 1);
+        }
+        if (left_stick.raw_y)
+        {
+            left_stick.y = utils::mapAnalogStick(*configs.leftStickYMiddleCal.value(),
+                                                 *configs.leftStickYStartCal.value(),
+                                                 *configs.leftStickYEndCal.value(),
+                                                 *left_stick.raw_y) * (configs.invertLeftY.value() ? -1 : 1);
+        }
+        if (right_stick.raw_x)
+        {
+            right_stick.x = utils::mapAnalogStick(*configs.rightStickXMiddleCal.value(),
+                                                  *configs.rightStickXStartCal.value(),
+                                                  *configs.rightStickXEndCal.value(),
+                                                  *right_stick.raw_x) * (configs.invertRightX.value() ? -1 : 1);
+        }
+        if (right_stick.raw_y)
+        {
+            right_stick.y = utils::mapAnalogStick(*configs.rightStickYMiddleCal.value(),
+                                                  *configs.rightStickYStartCal.value(),
+                                                  *configs.rightStickYEndCal.value(),
+                                                  *right_stick.raw_y) * (configs.invertRightY.value() ? -1 : 1);
+        }
     }
+}
+
+void read_buttons()
+{
+    left_stick.btn_pressed = !digitalRead(pins::left_btn);
+    right_stick.btn_pressed = !digitalRead(pins::right_btn);
+}
+
+bool buttons_pressed()
+{
+    return left_stick.btn_pressed.value_or(false) || right_stick.btn_pressed.value_or(false);
 }
 
 bool needs_calibration()
@@ -147,6 +181,26 @@ bool needs_calibration()
       configs.rightStickYStartCal.touched() &&
       configs.rightStickYMiddleCal.touched() &&
       configs.rightStickYEndCal.touched()
+    );
+}
+
+bool configs_are_valid()
+{
+    return (
+        // left stick
+        configs.leftStickXStartCal.value().has_value() &&
+        configs.leftStickXMiddleCal.value().has_value() &&
+        configs.leftStickXEndCal.value().has_value() &&
+        configs.leftStickYStartCal.value().has_value() &&
+        configs.leftStickYMiddleCal.value().has_value() &&
+        configs.leftStickYEndCal.value().has_value() &&
+        // right stick
+        configs.rightStickXStartCal.value().has_value() &&
+        configs.rightStickXMiddleCal.value().has_value() &&
+        configs.rightStickXEndCal.value().has_value() &&
+        configs.rightStickYStartCal.value().has_value() &&
+        configs.rightStickYMiddleCal.value().has_value() &&
+        configs.rightStickYEndCal.value().has_value()
     );
 }
 

@@ -19,8 +19,11 @@ extern analog_stick_t right_stick;
 
 void init();
 void update();
+void read_buttons();
 
+bool buttons_pressed();
 bool needs_calibration();
+bool configs_are_valid();
 bool has_raw_values(analog_stick_t stick);
 bool has_values(analog_stick_t stick);
 } // namespace analog_sticks

@@ -35,6 +35,10 @@ extern "C" void app_main()
     if (const auto result = configs.init("bobbyremote"); result != ESP_OK)
         ESP_LOGE(TAG, "config_init_settings() failed with %s", esp_err_to_name(result));
 
+    bootLabel.redraw("analog_sticks");
+
+    analog_sticks::read_buttons();
+
     for (const auto &task : schedulerTasks)
     {
         ESP_LOGI(TAG, "Init task %s", task.name());
@@ -43,7 +47,7 @@ extern "C" void app_main()
     }
 
     // check if analog sticks are mapped
-    if (analog_sticks::needs_calibration())
+    if (analog_sticks::needs_calibration() || analog_sticks::buttons_pressed())
     {
         espgui::switchScreen<CalibrateAnalogStickScreen>(true);
     }

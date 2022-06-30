@@ -56,12 +56,13 @@ void CalibrateAnalogStickScreen::initScreen()
     espgui::tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
     espgui::tft.drawString("Press Stick to save middles.", 10,  5);
-    espgui::tft.drawString("Press OK to save min/max", 10, 40);
+    espgui::tft.drawString("Press OK to save min/max.", 10, 40);
 
     m_label_leftx_stick.start();
     m_label_lefty_stick.start();
     m_label_rightx_stick.start();
     m_label_righty_stick.start();
+    m_label_status.start();
 }
 
 void CalibrateAnalogStickScreen::redraw()
@@ -73,6 +74,7 @@ void CalibrateAnalogStickScreen::redraw()
     m_label_lefty_stick.redraw(fmt::format( "&sLY Min:&m {} &sMax:&m {} &sMid:&m {}", m_left_y_min,  m_left_y_max,  m_left_y_mid));
     m_label_rightx_stick.redraw(fmt::format("&sRX Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_x_min, m_right_x_max, m_right_x_mid));
     m_label_righty_stick.redraw(fmt::format("&sRY Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_y_min, m_right_y_max, m_right_y_mid));
+    m_label_status.redraw(fmt::format("{}", (has_raw_values(left_stick) && has_raw_values(right_stick)) ? "Ready" : "No raw values"));
 }
 
 void CalibrateAnalogStickScreen::update()
@@ -80,44 +82,49 @@ void CalibrateAnalogStickScreen::update()
     using namespace analog_sticks;
     Base::update();
 
-    if (analog_sticks::needs_calibration())
+    if (!analog_sticks::has_raw_values(left_stick))
     {
-        if (!analog_sticks::has_raw_values(left_stick))
-        {
-            ESP_LOGI(TAG, "left stick has no values");
-            return;
-        }
-
-        if (!analog_sticks::has_raw_values(right_stick))
-        {
-            ESP_LOGI(TAG, "right stick has no values");
-            return;
-        }
-
-        if (const auto left_x_val = analog_sticks::left_stick.raw_x; left_x_val)
-        {
-            m_left_x_min = std::min<uint16_t>(*left_x_val, m_left_x_min);
-            m_left_x_max = std::max<uint16_t>(*left_x_val, m_left_x_max);
-        }
-
-        if (const auto left_y_val = analog_sticks::left_stick.raw_y; left_y_val)
-        {
-            m_left_y_min = std::min<uint16_t>(*left_y_val, m_left_y_min);
-            m_left_y_max = std::max<uint16_t>(*left_y_val, m_left_y_max);
-        }
-
-        if (const auto right_x_val = analog_sticks::right_stick.raw_x; right_x_val)
-        {
-            m_right_x_min = std::min<uint16_t>(*right_x_val, m_right_x_min);
-            m_right_x_max = std::max<uint16_t>(*right_x_val, m_right_x_max);
-        }
-
-        if (const auto right_y_val = analog_sticks::right_stick.raw_y; right_y_val)
-        {
-            m_right_y_min = std::min<uint16_t>(*right_y_val, m_right_y_min);
-            m_right_y_max = std::max<uint16_t>(*right_y_val, m_right_y_max);
-        }
+        ESP_LOGI(TAG, "left stick has no values");
+        return;
     }
+
+    if (!analog_sticks::has_raw_values(right_stick))
+    {
+        ESP_LOGI(TAG, "right stick has no values");
+        return;
+    }
+
+    if (const auto left_x_val = analog_sticks::left_stick.raw_x; left_x_val)
+    {
+        m_left_x_min = std::min<uint16_t>(*left_x_val, m_left_x_min);
+        m_left_x_max = std::max<uint16_t>(*left_x_val, m_left_x_max);
+    }
+    else
+        ESP_LOGI(TAG, "left stick has no x value");
+
+    if (const auto left_y_val = analog_sticks::left_stick.raw_y; left_y_val)
+    {
+        m_left_y_min = std::min<uint16_t>(*left_y_val, m_left_y_min);
+        m_left_y_max = std::max<uint16_t>(*left_y_val, m_left_y_max);
+    }
+    else
+        ESP_LOGI(TAG, "left stick has no y value");
+
+    if (const auto right_x_val = analog_sticks::right_stick.raw_x; right_x_val)
+    {
+        m_right_x_min = std::min<uint16_t>(*right_x_val, m_right_x_min);
+        m_right_x_max = std::max<uint16_t>(*right_x_val, m_right_x_max);
+    }
+    else
+        ESP_LOGI(TAG, "right stick has no x value");
+
+    if (const auto right_y_val = analog_sticks::right_stick.raw_y; right_y_val)
+    {
+        m_right_y_min = std::min<uint16_t>(*right_y_val, m_right_y_min);
+        m_right_y_max = std::max<uint16_t>(*right_y_val, m_right_y_max);
+    }
+    else
+        ESP_LOGI(TAG, "right stick has no y value");
 }
 
 void CalibrateAnalogStickScreen::buttonPressed(espgui::Button button)
