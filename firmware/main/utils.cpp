@@ -4,7 +4,10 @@
 #include <cpputils.h>
 
 // local includes
+#include "analog_sticks.h"
 #include "settings.h"
+
+#include "esp_log.h"
 
 namespace utils {
 
@@ -35,4 +38,34 @@ float mapAnalogStick(uint16_t middle, uint16_t start, uint16_t end, uint16_t raw
     }
 }
 
+float x_coord()
+{
+    // ToDo: take config into account
+    return analog_sticks::left_stick.x ? analog_sticks::left_stick.x.value() : 0;
+}
+
+float y_coord()
+{
+    return analog_sticks::left_stick.y ? analog_sticks::left_stick.y.value() : 0;
+}
+
+MotorPwms calculatePwm()
+{
+    const auto x = x_coord() / 100.f;
+    const auto y = y_coord() / 100.f;
+
+    const auto frontSteer = configs.frontSteer.value();
+    const auto backSteer = configs.backSteer.value();
+    const auto frontDrive = configs.frontDrive.value();
+    const auto backDrive = configs.backDrive.value();
+
+    MotorPwms pwms;
+
+    pwms.frontLeft = (x * frontSteer + y * frontDrive);
+    pwms.frontRight = (-x * frontSteer + y * frontDrive);
+    pwms.backLeft = (x * backSteer + y * backDrive);
+    pwms.backRight = (-x * backSteer + y * backDrive);
+
+    return pwms;
+}
 } // namespace utils

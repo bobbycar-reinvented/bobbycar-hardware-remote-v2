@@ -34,4 +34,5 @@ private:
 
     espgui::Label m_left_label{15, 15};
     espgui::Label m_right_label{15, 40};
+    espgui::Label m_stats_label{15, 65};
 };

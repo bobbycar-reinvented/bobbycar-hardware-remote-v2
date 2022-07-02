@@ -5,6 +5,7 @@
 
 // local includes
 #include "analog_sticks.h"
+#include "ble.h"
 #include "debugconsole.h"
 
 using namespace std::chrono_literals;
@@ -16,8 +17,9 @@ constexpr const char * const TAG = "TASKS";
 void not_needed() {}
 
 SchedulerTask schedulerTasksArr[] {
-    SchedulerTask { "debugconsole", init_debugconsole, update_debugconsole, 50ms },
-    SchedulerTask { "analog_sticks", analog_sticks::init, analog_sticks::update, 30ms }
+    SchedulerTask { "debugconsole",  init_debugconsole,   update_debugconsole,   50ms },
+    SchedulerTask { "analog_sticks", analog_sticks::init, analog_sticks::update, 30ms },
+    SchedulerTask { "ble",           ble::init,           ble::update,           50ms }
 };
 } // namespace
 

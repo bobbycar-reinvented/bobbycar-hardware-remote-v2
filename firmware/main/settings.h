@@ -18,6 +18,8 @@
 // local includes
 #include "enums.h"
 
+std::string defaultHostname();
+
 constexpr const auto INPUT_MAPPING_NONE = std::numeric_limits<uint8_t>::max();
 
 using namespace espconfig;
@@ -29,6 +31,14 @@ extern ConfigManager<ConfigContainer> configs;
 class ConfigContainer
 {
 public:
+    struct : ConfigWrapper<std::string>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "hostname"; }
+        std::string defaultValue() const override final { return defaultHostname(); }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } hostname;
+
     struct : ConfigWrapper<bool>
     {
         bool allowReset() const override final { return true; }
@@ -298,12 +308,54 @@ public:
         ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
     } analogStickMode;
 
+    // BLE
+    struct : ConfigWrapper<std::string>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "recoAddr"; }
+        std::string defaultValue() const override final { return "24:4c:ab:1e:7d:7a"; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } reconnectAddress;
+
+    struct : ConfigWrapper<int16_t>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "frontSteer"; }
+        int16_t defaultValue() const override final { return 100; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } frontSteer;
+
+    struct : ConfigWrapper<int16_t>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "backSteer"; }
+        int16_t defaultValue() const override final { return 0; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } backSteer;
+
+    struct : ConfigWrapper<int16_t>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "frontDrive"; }
+        int16_t defaultValue() const override final { return 75; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } frontDrive;
+
+    struct : ConfigWrapper<int16_t>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "backDrive"; }
+        int16_t defaultValue() const override final { return 100; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } backDrive;
+
     template<typename T>
     void callForEveryConfig(T &&callable)
     {
 #define REGISTER_CONFIG(name) \
         if (callable(name)) return;
 
+        REGISTER_CONFIG(hostname)
         REGISTER_CONFIG(displayRotated)
 
         // dpad mapping
@@ -342,5 +394,12 @@ public:
 
         // analog stick mode
         REGISTER_CONFIG(analogStickMode)
+
+        // BLE
+        REGISTER_CONFIG(reconnectAddress)
+        REGISTER_CONFIG(frontSteer)
+        REGISTER_CONFIG(backSteer)
+        REGISTER_CONFIG(frontDrive)
+        REGISTER_CONFIG(backDrive)
     }
 };

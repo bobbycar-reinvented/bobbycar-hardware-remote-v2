@@ -8,6 +8,7 @@
 
 // local lib includes
 #include "analog_sticks.h"
+#include "ble.h"
 #include "globals.h"
 #include "icons/alert.h"
 #include "menus/mainmenu.h"
@@ -47,6 +48,7 @@ void StatusScreen::initScreen()
 
     m_left_label.start();
     m_right_label.start();
+    m_stats_label.start();
 }
 
 void StatusScreen::update()
@@ -68,13 +70,13 @@ void StatusScreen::update()
 
 void StatusScreen::redraw()
 {
-    static bool clear_needed = false;
+    static bool clear_needed = true;
 
     using namespace espgui;
 
     Base::redraw();
 
-    if (!globals::bobby_connected)
+    if (!ble::isConnected())
     {
         if (clear_needed)
         {
@@ -83,20 +85,26 @@ void StatusScreen::redraw()
             m_right_label.clear();
 
             tft.fillScreen(TFT_BLACK);
+
+            tft.setTextColor(TFT_RED);
+            const auto fontOffset = tft.textWidth(TEXT_NOT_CONNECTED);
+            tft.drawString(TEXT_NOT_CONNECTED, tft.width() / 2 - 10 - (fontOffset/2), (tft.height()-tft.fontHeight()) / 2);
+
+            tft.setSwapBytes(true);
+            tft.pushImage(tft.width() / 2 + (fontOffset/2), (tft.height()-bobbyicons::alert.HEIGHT) / 2, bobbyicons::alert.WIDTH, bobbyicons::alert.HEIGHT, bobbyicons::alert.buffer);
+            tft.setSwapBytes(false);
         }
-
-        tft.setTextColor(TFT_RED);
-        const auto fontOffset = tft.textWidth(TEXT_NOT_CONNECTED);
-        tft.drawString(TEXT_NOT_CONNECTED, tft.width() / 2 - 10 - (fontOffset/2), (tft.height()-tft.fontHeight()) / 2);
-
-        tft.setSwapBytes(true);
-        tft.pushImage(tft.width() / 2 + (fontOffset/2), (tft.height()-bobbyicons::alert.HEIGHT) / 2, bobbyicons::alert.WIDTH, bobbyicons::alert.HEIGHT, bobbyicons::alert.buffer);
-        tft.setSwapBytes(false);
-
         return;
     }
     else
+    {
+        if (!clear_needed)
+        {
+            tft.fillScreen(TFT_BLACK);
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        }
         clear_needed = true;
+    }
 
     if (m_left_x != m_last_left_x || m_left_y != m_last_left_y || m_left_pressed != m_last_left_pressed)
     {
@@ -127,6 +135,11 @@ void StatusScreen::redraw()
 
     m_left_label.redraw(fmt::format("left: x={:.2f}, y={:.2f}", *left_stick.x, *left_stick.y));
     m_right_label.redraw(fmt::format("right: x={:.2f}, y={:.2f}", *right_stick.x, *right_stick.y));
+
+    if (bobbyStats.valid)
+    {
+        m_stats_label.redraw(fmt::format("Speed: {:.2f} km/h", bobbyStats.avgSpeed));
+    }
 }
 
 void StatusScreen::buttonPressed(espgui::Button button)
