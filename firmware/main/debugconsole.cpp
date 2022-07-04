@@ -12,6 +12,9 @@
 #include <screenmanager.h>
 #include <tftinstance.h>
 
+// local includes
+#include "settings.h"
+
 namespace {
 constexpr const char * const TAG = "DEBUG";
 
@@ -123,6 +126,18 @@ void handleNormalChar(char c)
             {
                 display->initScreen();
             }
+            break;
+        case 'q':
+        case 'Q':
+            configs.reset_config(configs.dpadUp);
+            configs.reset_config(configs.dpadDown);
+            configs.reset_config(configs.dpadRight);
+            configs.reset_config(configs.dpadLeft);
+            configs.reset_config(configs.dpadUp2);
+            configs.reset_config(configs.dpadDown2);
+            configs.reset_config(configs.dpadRight2);
+            configs.reset_config(configs.dpadLeft2);
+            ESP_LOGI(TAG, "Reset all configs");
             break;
         }
     }

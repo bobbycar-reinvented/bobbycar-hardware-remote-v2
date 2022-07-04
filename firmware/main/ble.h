@@ -23,6 +23,7 @@ void startScan();
 void stopScan();
 
 bool isConnected();
+void disableAutoConnect();
 
 void clearResults();
 size_t bobbycars_found();

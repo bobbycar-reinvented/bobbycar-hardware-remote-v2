@@ -15,7 +15,9 @@ constexpr const char * const TAG = "BOBBY_REMOTE";
 
 // local includes
 #include "analog_sticks.h"
+#include "ble.h"
 #include "screens.h"
+#include "screens/buttonmapscreen.h"
 #include "screens/calibrateanalogsticksscreen.h"
 #include "screens/statusscreen.h"
 #include "settings.h"
@@ -47,9 +49,24 @@ extern "C" void app_main()
     }
 
     // check if analog sticks are mapped
-    if (analog_sticks::needs_calibration() || analog_sticks::buttons_pressed())
+    if (
+        configs.dpadUp.value() == INPUT_MAPPING_NONE ||
+        configs.dpadDown.value() == INPUT_MAPPING_NONE ||
+        configs.dpadLeft.value() == INPUT_MAPPING_NONE ||
+        configs.dpadRight.value() == INPUT_MAPPING_NONE ||
+        configs.dpadUp2.value() == INPUT_MAPPING_NONE ||
+        configs.dpadDown2.value() == INPUT_MAPPING_NONE ||
+        configs.dpadLeft2.value() == INPUT_MAPPING_NONE ||
+        configs.dpadRight2.value() == INPUT_MAPPING_NONE
+       )
+    {
+        espgui::switchScreen<ButtonMapScreen>();
+        ble::disableAutoConnect();
+    }
+    else if (analog_sticks::needs_calibration() || analog_sticks::buttons_pressed())
     {
         espgui::switchScreen<CalibrateAnalogStickScreen>(true);
+        ble::disableAutoConnect();
     }
     else
         espgui::switchScreen<StatusScreen>();

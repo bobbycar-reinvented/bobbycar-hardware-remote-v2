@@ -142,7 +142,7 @@ void init()
 void update()
 {
     // handle stuff like scan on boot, then auto connect to saved mac address
-    if (!isConnected() && _status == BLEScanStatus::Idle && espchrono::millis_clock::now().time_since_epoch() > 2s)
+    if (!isConnected() && _status == BLEScanStatus::Idle && espchrono::millis_clock::now().time_since_epoch() > 2s && !_triedAutoConnect)
     {
         startScan();
     }
@@ -159,9 +159,9 @@ void update()
 
         bool contains = false;
 
-        for (size_t i = 0; i < scan_results.size(); i++)
+        for (auto &scan_result : scan_results)
         {
-            if (scan_results[i].getAddress() == saved)
+            if (scan_result.getAddress() == saved)
             {
                 contains = true;
             }
@@ -272,6 +272,11 @@ void stopScan()
     pScan->stop();
     pScan->clearResults();
     _status = BLEScanStatus::Idle;
+}
+
+void disableAutoConnect()
+{
+    _triedAutoConnect = true;
 }
 
 void clearResults()

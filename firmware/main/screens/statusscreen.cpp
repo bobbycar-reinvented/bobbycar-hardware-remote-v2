@@ -49,6 +49,8 @@ void StatusScreen::initScreen()
     m_left_label.start();
     m_right_label.start();
     m_stats_label.start();
+
+    clear_needed = true;
 }
 
 void StatusScreen::update()
@@ -70,8 +72,6 @@ void StatusScreen::update()
 
 void StatusScreen::redraw()
 {
-    static bool clear_needed = true;
-
     using namespace espgui;
 
     Base::redraw();
