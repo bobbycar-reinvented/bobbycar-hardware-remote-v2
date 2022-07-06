@@ -6,9 +6,9 @@
 #include <screenmanager.h>
 
 // local includes
-#include <ble.h>
-#include <bobbyerrorhandler.h>
-#include <icons/presets.h>
+#include "ble.h"
+#include "bobbyerrorhandler.h"
+#include "icons/presets.h"
 
 class BleScanMenuItem : public espgui::MenuItem
 {
@@ -33,7 +33,6 @@ private:
 
 void BleScanMenuItem::triggered()
 {
-    ESP_LOGI("MenuItem", "BleScanMenuItem::triggered() -> %s", text().c_str());
     ble::connect(m_device.getAddress());
     espgui::popScreen();
 }
@@ -49,9 +48,17 @@ std::string BleScanMenuItem::text() const
 
 [[nodiscard]] std::string BleScanMenu::text() const
 {
-    if (ble::status() == ble::BLEScanStatus::Done)
-        return "Scan complete";
-    return "Scanning...";
+    switch (ble::status())
+    {
+    case ble::BLEScanStatus::Done:
+        return fmt::format("Scan complete ({} found)", ble::bobbycars_found());
+    case ble::BLEScanStatus::Idle:
+        return "Idle";
+    case ble::BLEScanStatus::Scanning:
+        return "Scanning";
+    default:
+        return "Scanning...";
+    }
 }
 
 void BleScanMenu::back()

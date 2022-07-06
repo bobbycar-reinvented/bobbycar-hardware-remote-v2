@@ -129,6 +129,7 @@ void handleNormalChar(char c)
             break;
         case 'q':
         case 'Q':
+            /*
             configs.reset_config(configs.dpadUp);
             configs.reset_config(configs.dpadDown);
             configs.reset_config(configs.dpadRight);
@@ -138,6 +139,7 @@ void handleNormalChar(char c)
             configs.reset_config(configs.dpadRight2);
             configs.reset_config(configs.dpadLeft2);
             ESP_LOGI(TAG, "Reset all configs");
+            */
             break;
         }
     }

@@ -2,6 +2,7 @@
 
 // 3rdparty lib includes
 #include <cpputils.h>
+#include <espchrono.h>
 #include <fmt/core.h>
 #include <screenmanager.h>
 #include <tftinstance.h>
@@ -14,6 +15,7 @@
 #include "menus/mainmenu.h"
 
 using namespace analog_sticks;
+using namespace std::chrono_literals;
 
 namespace {
 constexpr auto static_radius = 30;
@@ -138,7 +140,7 @@ void StatusScreen::redraw()
 
     if (bobbyStats.valid)
     {
-        m_stats_label.redraw(fmt::format("Speed: {:.2f} km/h", bobbyStats.avgSpeed));
+        m_stats_label.redraw(fmt::format("Speed: {:.2f} km/h - {}ms", bobbyStats.avgSpeed, ble::lastUpdate ? espchrono::ago(*ble::lastUpdate) / 1ms : 0));
     }
 }
 

@@ -9,7 +9,6 @@ constexpr const char * const TAG = "BOBBY_BLE";
 #include <NimBLEAdvertisedDevice.h>
 #include <NimBLEDevice.h>
 #include <NimBLEUUID.h>
-#include <espchrono.h>
 
 // local includes
 #include "analog_sticks.h"
@@ -20,6 +19,11 @@ constexpr const char * const TAG = "BOBBY_BLE";
 using namespace std::chrono_literals;
 
 namespace ble {
+
+std::optional<espchrono::millis_clock::time_point> lastUpdate{};
+std::optional<espchrono::millis_clock::time_point> lastScan{};
+
+std::vector<NimBLEAdvertisedDevice> scan_results;
 
 namespace {
 BLEScanStatus _status;
@@ -91,6 +95,8 @@ void livestatsCallback(NimBLERemoteCharacteristic *pRemoteCharacteristic, uint8_
             bobbyStats.back.right.speed) / 4;
 
     bobbyStats.valid = true;
+
+    lastUpdate = espchrono::millis_clock::now();
 }
 
 void send_inputs()
@@ -123,8 +129,6 @@ void send_inputs()
 }
 } // namespace
 
-std::vector<NimBLEAdvertisedDevice> scan_results;
-
 bool isConnected()
 {
     return _isConnected;
@@ -137,6 +141,8 @@ void init()
     _triedAutoConnect = false;
     _stats_service_discovered = false;
     _remote_service_discovered = false;
+
+    lastSent = espchrono::millis_clock::now();
 }
 
 void update()
@@ -208,6 +214,19 @@ void update()
             send_inputs();
         }
     }
+
+    if (isConnected() && lastUpdate && espchrono::ago(*lastUpdate) > 500ms)
+    {
+        ESP_LOGW(TAG, "No update from bobbycar for 500ms, disconnecting");
+        disconnect();
+    }
+
+    if (!isConnected() && lastScan && espchrono::ago(*lastScan) > 60s && _status != BLEScanStatus::Scanning)
+    {
+        ESP_LOGI(TAG, "Rescanning...");
+        _triedAutoConnect = false;
+        startScan();
+    }
 }
 
 BLEScanStatus status()
@@ -251,6 +270,7 @@ void startScan()
     pScan->setWindow(50);
 
     _status = BLEScanStatus::Scanning;
+    lastScan = espchrono::millis_clock::now();
 
     pScan->start(5);
     pScan->clearResults();
@@ -303,12 +323,26 @@ void connect(NimBLEAddress uuid)
     if (pClient->connect(uuid))
     {
         _isConnected = true;
-        // discover statistic characteristic
+        lastScan = std::nullopt;
         ESP_LOGI(TAG, "Connected!");
+        configs.write_config(configs.reconnectAddress, uuid.toString());
     }
     else
     {
         ESP_LOGE(TAG, "Failed to connect to %s", uuid.toString().c_str());
     }
+}
+
+void disconnect()
+{
+    if (pClient)
+    {
+        pClient->disconnect();
+    }
+    _isConnected = false;
+    _stats_service_discovered = false;
+    _remote_service_discovered = false;
+    clearResults();
+    lastUpdate = std::nullopt;
 }
 } // namespace ble
