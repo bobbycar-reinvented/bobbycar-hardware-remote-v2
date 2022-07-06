@@ -1,3 +1,57 @@
 [submodule "kicad/wch-kicad-lbr"]
 	path = kicad/wch-kicad-lbr
 	url = ../../sad-electronics/wch-kicad-lbr.git
+[submodule "firmware/components/esp-gui-lib"]
+	path = firmware/components/esp-gui-lib
+	url = ../../0xFEEDC0DE64/esp-gui-lib.git
+[submodule "firmware/esp-idf"]
+	path = firmware/esp-idf
+	url = ../../0xFEEDC0DE64/esp-idf.git
+[submodule "firmware/components/expected"]
+	path = firmware/components/expected
+	url = ../../0xFEEDC0DE64/expected.git
+[submodule "firmware/components/fmt"]
+	path = firmware/components/fmt
+	url = ../../0xFEEDC0DE64/fmt.git
+[submodule "firmware/components/ArduinoJson"]
+	path = firmware/components/ArduinoJson
+	url = ../../0xFEEDC0DE64/ArduinoJson.git
+[submodule "firmware/components/TFT_eSPI"]
+	path = firmware/components/TFT_eSPI
+	url = ../../0xFEEDC0DE64/TFT_eSPI.git
+[submodule "firmware/components/arduino-esp32"]
+	path = firmware/components/arduino-esp32
+	url = ../../0xFEEDC0DE64/arduino-esp32.git
+[submodule "firmware/components/cpputils"]
+	path = firmware/components/cpputils
+	url = ../../0xFEEDC0DE64/cpputils.git
+[submodule "firmware/components/esp-nimble-cpp"]
+	path = firmware/components/esp-nimble-cpp
+	url = ../../0xFEEDC0DE64/esp-nimble-cpp.git
+[submodule "firmware/components/espchrono"]
+	path = firmware/components/espchrono
+	url = ../../0xFEEDC0DE64/espchrono.git
+[submodule "firmware/components/espconfiglib"]
+	path = firmware/components/espconfiglib
+	url = ../../0xFEEDC0DE64/espconfiglib.git
+[submodule "firmware/components/espcpputils"]
+	path = firmware/components/espcpputils
+	url = ../../0xFEEDC0DE64/espcpputils.git
+[submodule "firmware/components/esphttpdutils"]
+	path = firmware/components/esphttpdutils
+	url = ../../0xFEEDC0DE64/esphttpdutils.git
+[submodule "firmware/components/espwifistack"]
+	path = firmware/components/espwifistack
+	url = ../../0xFEEDC0DE64/espwifistack.git
+[submodule "firmware/esp-protocols"]
+	path = firmware/esp-protocols
+	url = ../../0xFEEDC0DE64/esp-protocols.git
+[submodule "firmware/components/date"]
+	path = firmware/components/date
+	url = ../../0xFEEDC0DE64/date.git
+[submodule "firmware/components/QRCode-esp32"]
+	path = firmware/components/QRCode-esp32
+	url = ../../bobbycar-graz/QRCode-esp32.git
+[submodule "firmware/components/cxx-ring-buffer"]
+	path = firmware/components/cxx-ring-buffer
+	url = ../../0xFEEDC0DE64/cxx-ring-buffer.git
