@@ -14,6 +14,8 @@
 #include <screenmanager.h>
 
 // local includes
+#include "dualboot.h"
+#include "gamecontroller/gamecontroller.h"
 #include "settings.h"
 
 using namespace std::chrono_literals;
@@ -96,12 +98,19 @@ void Dpad<Nin, Nout, pinsIn, pinsOut>::update()
         if (button.lastState != button.newState && espchrono::ago(button.debounce) > 30ms)
         {
             button.lastState = button.newState;
-            if (espgui::currentDisplay)
+            if (espgui::currentDisplay && !boot_gamecontroller)
             {
                 if (button.newState)
                     espgui::currentDisplay->rawButtonPressed(i);
                 else
                     espgui::currentDisplay->rawButtonReleased(i);
+            }
+            else if (boot_gamecontroller)
+            {
+                if (button.newState)
+                    gamecontroller::press(i);
+                else
+                    gamecontroller::release(i);
             }
             button.debounce = now;
         }

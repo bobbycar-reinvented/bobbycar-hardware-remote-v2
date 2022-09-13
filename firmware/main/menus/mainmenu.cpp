@@ -7,6 +7,7 @@
 #include <tftinstance.h>
 
 // local includes
+#include "actions/gamecontrolleraction.h"
 #include "icons/reboot.h"
 #include "icons/settings.h"
 #include "menus/settingsmenu.h"
@@ -14,6 +15,7 @@
 namespace {
 constexpr char TEXT_SETTINGS[] = "Settings";
 constexpr char TEXT_REBOOT[] = "Reboot";
+constexpr char TEXT_GAMECONTROLLER[] = "Gamecontroller";
 
 class RebootAction : public virtual espgui::ActionInterface
 {
@@ -42,6 +44,7 @@ MainMenu::MainMenu()
     using namespace espgui;
 
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_SETTINGS>, StaticMenuItemIcon<&bobbyicons::settings>, PushScreenAction<SettingsMenu>>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_GAMECONTROLLER>, BootIntoGamecontrollerAction>>();
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_REBOOT>, StaticMenuItemIcon<&bobbyicons::reboot>, RebootAction>>();
 }
 

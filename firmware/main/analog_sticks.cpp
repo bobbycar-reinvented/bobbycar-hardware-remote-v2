@@ -8,6 +8,8 @@ constexpr const char * const TAG = "ANALOG_STICKS";
 
 // local includes
 #include "bobbybuttons.h"
+#include "dualboot.h"
+#include "gamecontroller/gamecontroller.h"
 #include "pins.h"
 #include "screenmanager.h"
 #include "settings.h"
@@ -97,12 +99,19 @@ void update()
     {
         last_left_state = *left_stick.btn_pressed;
 
-        if (espgui::currentDisplay)
+        if (espgui::currentDisplay && !boot_gamecontroller)
         {
             if (last_left_state)
                 espgui::currentDisplay->buttonPressed(espgui::Button(BobbyButton::LeftStick));
             else
                 espgui::currentDisplay->buttonReleased(espgui::Button(BobbyButton::LeftStick));
+        }
+        else if (boot_gamecontroller)
+        {
+            if (last_left_state)
+                gamecontroller::press(BobbyButton::LeftStick);
+            else
+                gamecontroller::release(BobbyButton::LeftStick);
         }
     }
 
@@ -110,12 +119,19 @@ void update()
     {
         last_right_state = *right_stick.btn_pressed;
 
-        if (espgui::currentDisplay)
+        if (espgui::currentDisplay && !boot_gamecontroller)
         {
             if (last_right_state)
                 espgui::currentDisplay->buttonPressed(espgui::Button(BobbyButton::RightStick));
             else
                 espgui::currentDisplay->buttonReleased(espgui::Button(BobbyButton::RightStick));
+        }
+        else if (boot_gamecontroller)
+        {
+            if (last_right_state)
+                gamecontroller::press(BobbyButton::RightStick);
+            else
+                gamecontroller::release(BobbyButton::RightStick);
         }
     }
 
