@@ -180,6 +180,11 @@ bool buttons_pressed()
     return left_stick.btn_pressed.value_or(false) || right_stick.btn_pressed.value_or(false);
 }
 
+bool both_buttons_pressed()
+{
+    return left_stick.btn_pressed.value_or(false) && right_stick.btn_pressed.value_or(false);
+}
+
 bool needs_calibration()
 {
     return !(

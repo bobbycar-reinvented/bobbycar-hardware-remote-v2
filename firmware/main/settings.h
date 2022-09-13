@@ -349,6 +349,14 @@ public:
         ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
     } backDrive;
 
+    struct : ConfigWrapper<bool>
+    {
+        bool allowReset() const override final { return true; }
+        const char *nvsName() const override final { return "gameconBackl"; }
+        bool defaultValue() const override final { return true; }
+        ConfigConstraintReturnType checkValue(value_t value) const override final { return {}; }
+    } gamecontrollerBacklight;
+
     template<typename T>
     void callForEveryConfig(T &&callable)
     {
@@ -401,5 +409,8 @@ public:
         REGISTER_CONFIG(backSteer)
         REGISTER_CONFIG(frontDrive)
         REGISTER_CONFIG(backDrive)
+
+        // Gamecontroller Settings
+        REGISTER_CONFIG(gamecontrollerBacklight)
     }
 };

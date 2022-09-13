@@ -1,5 +1,8 @@
 #include "gamecontroller.h"
 
+// esp-idf includes
+#include <esp32-hal-gpio.h>
+
 // 3rdparty lib includes
 #include <BleGamepad.h>
 #include <fmt/core.h>
@@ -28,6 +31,11 @@ void reset_log()
 
 void print_log(std::string_view text)
 {
+    if (configs.gamecontrollerBacklight.value())
+    {
+        return;
+    }
+
     log_y += espgui::tft.fontHeight() + 2;
     if (log_y > espgui::tft.height() - espgui::tft.fontHeight() - 2)
     {
@@ -59,6 +67,8 @@ void init()
     bleGamepad.begin(&bleGamepadConfiguration);
     tft.drawString("Done", next_text_x, 0);
     reset_log();
+
+    digitalWrite(PIN_LED_BACKLIGHT, configs.gamecontrollerBacklight.value());
 }
 
 void update()

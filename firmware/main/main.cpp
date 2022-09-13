@@ -8,9 +8,6 @@ constexpr const char * const TAG = "BOBBY_REMOTE";
 
 // 3rdparty lib includes
 #include <espchrono.h>
-#include <espwifistack.h>
-#include <espwifistack.h>
-#include <schedulertask.h>
 #include <screenmanager.h>
 
 // local includes
@@ -69,7 +66,7 @@ extern "C" void app_main()
         espgui::switchScreen<ButtonMapScreen>();
         ble::disableAutoConnect();
     }
-    else if (analog_sticks::needs_calibration() || analog_sticks::buttons_pressed())
+    else if (analog_sticks::needs_calibration() || analog_sticks::both_buttons_pressed())
     {
         espgui::switchScreen<CalibrateAnalogStickScreen>(true);
         ble::disableAutoConnect();
