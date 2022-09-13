@@ -17,7 +17,24 @@ BleGamepad bleGamepad{
     "bobbycar-graz",
     100
 };
+uint16_t log_y = 0;
 } // namespace
+
+void reset_log()
+{
+    log_y = (espgui::tft.fontHeight() + 2) * 2;
+    espgui::tft.fillRect(0, log_y, espgui::tft.width(), espgui::tft.height() - log_y, TFT_BLACK);
+}
+
+void print_log(std::string_view text)
+{
+    log_y += espgui::tft.fontHeight() + 2;
+    if (log_y > espgui::tft.height() - espgui::tft.fontHeight() - 2)
+    {
+        reset_log();
+    }
+    espgui::tft.drawString(text, 0, log_y, 2);
+}
 
 void init()
 {
@@ -41,6 +58,7 @@ void init()
 
     bleGamepad.begin(&bleGamepadConfiguration);
     tft.drawString("Done", next_text_x, 0);
+    reset_log();
 }
 
 void update()
@@ -74,9 +92,9 @@ void update()
     {
         using namespace analog_sticks;
         const int16_t lx = left_stick.x ? left_stick.x.value() : 0;
-        const int16_t ly = left_stick.y ? left_stick.y.value() : 0;
+        const int16_t ly = left_stick.y ? left_stick.y.value() * -1 : 0;
         const int16_t rx = right_stick.x ? right_stick.x.value() : 0;
-        const int16_t ry = right_stick.y ? right_stick.y.value() : 0;
+        const int16_t ry = right_stick.y ? right_stick.y.value() * -1 : 0;
 
         bleGamepad.setAxes(lx, ly, 0, 0, rx, ry, 0, 0);
     }
@@ -85,12 +103,14 @@ void update()
 void press(uint16_t button)
 {
     bleGamepad.press(button+1);
+    print_log(fmt::format("pressed button {}", button));
     bleGamepad.sendReport();
 }
 
 void release(uint16_t button)
 {
     bleGamepad.release(button+1);
+    print_log(fmt::format("released button {}", button));
     bleGamepad.sendReport();
 }
 } // namespace gamecontroller
