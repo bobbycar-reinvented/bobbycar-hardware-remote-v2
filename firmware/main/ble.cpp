@@ -12,6 +12,7 @@ constexpr const char * const TAG = "BOBBY_BLE";
 
 // local includes
 #include "analog_sticks.h"
+#include "dualboot.h"
 #include "globals.h"
 #include "settings.h"
 #include "utils.h"
@@ -26,6 +27,7 @@ std::optional<espchrono::millis_clock::time_point> lastScan{};
 std::vector<NimBLEAdvertisedDevice> scan_results;
 
 namespace {
+uint32_t scan_count{0};
 BLEScanStatus _status;
 bool _isConnected;
 bool _triedAutoConnect;
@@ -147,6 +149,11 @@ void init()
 
 void update()
 {
+    if (boot_gamecontroller)
+    {
+        return;
+    }
+
     // handle stuff like scan on boot, then auto connect to saved mac address
     if (!isConnected() && _status == BLEScanStatus::Idle && espchrono::millis_clock::now().time_since_epoch() > 2s && !_triedAutoConnect)
     {
@@ -246,6 +253,7 @@ public:
                 scan_results.push_back(*advertisedDevice);
             }
         }
+        scan_count++;
     }
 };
 
@@ -263,6 +271,8 @@ void startScan()
 
     NimBLEDevice::init(configs.hostname.value());
 
+    scan_count = 0;
+
     auto *pScan = NimBLEDevice::getScan();
     pScan->setAdvertisedDeviceCallbacks(new BLEScanCallback());
     pScan->setActiveScan(true);
@@ -275,7 +285,7 @@ void startScan()
     pScan->start(5);
     pScan->clearResults();
 
-    ESP_LOGI(TAG, "Scanning done, found %u", scan_results.size());
+    ESP_LOGI(TAG, "Scanning done, found %u available devices (%u found)", scan_results.size(), scan_count);
 
     _status = BLEScanStatus::Done;
 }

@@ -29,8 +29,9 @@ constexpr char TEXT_BACK_STEER[] = "Back Steer Pwm";
 constexpr char TEXT_FRONT_DRIVE[] = "Front Drive Pwm";
 constexpr char TEXT_BACK_DRIVE[] = "Back Drive Pwm";
 
+constexpr char TEXT_GAMECONTROLLER_BACKLIGHT[] = "Gamecontroller backlight";
 
-    using namespace espgui;
+using namespace espgui;
 
 using DeadbandChangeScreen = espgui::makeComponent<
     BobbyChangeValueDisplay<uint16_t>,
@@ -92,7 +93,7 @@ SettingsMenu::SettingsMenu()
     constructMenuItem<makeComponent<MenuItem, TextWithHighlightedValueHelper<TEXT_BACK_DRIVE, BackDriveAccessor>, PushScreenAction<BackDriveChangeMenu>>>();
 
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_BLE_SETTINGS>, PushScreenAction<BleSettingsMenu>, StaticMenuItemIcon<&bobbyicons::bluetooth>>>();
-    // constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_REBOOT>, StaticMenuItemIcon<&bobbyicons::reboot>, RebootAction>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_GAMECONTROLLER_BACKLIGHT>, BobbyCheckbox, GamecontrollerBacklightAccessor>>();
 }
 
 std::string SettingsMenu::text() const
