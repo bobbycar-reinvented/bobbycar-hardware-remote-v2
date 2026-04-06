@@ -1,17 +1,19 @@
 #pragma once
 
+// system includes
+#include <format>
+
 // 3rdparty lib includes
 #include <actions/dummyaction.h>
 #include <actions/popscreenaction.h>
-#include <actions/pushscreenaction.h>
 #include <configwrapper.h>
-#include <fmt/core.h>
 #include <icons/back.h>
 
 // local includes
 #include "bobbyerrorhandler.h"
 #include "bobbymenudisplay.h"
 #include "bobbytypesafeenum.h"
+#include "icons/back_grey.h"
 #include "settings.h"
 
 namespace typesafeenumchangemenu {
@@ -64,7 +66,7 @@ namespace typesafeenumchangemenu {
             public BobbyMenuDisplay
     {
     public:
-        TypeSafeChangeMenu(ConfigWrapper<TEnum>* config) : m_config{config}
+      explicit TypeSafeChangeMenu(ConfigWrapper<TEnum>* config) : m_config{config}
         {
             using namespace espgui;
             using namespace typesafeenumchangemenu;
@@ -73,12 +75,12 @@ namespace typesafeenumchangemenu {
             iterateEnum<TEnum>::iterate([&](TEnum enum_value, const auto &string_value){
                 constructMenuItem<TypesafeEnumSetterMenuItem<TEnum>>(enum_value, m_config);
             });
-            constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_BACK>, PopScreenAction, StaticMenuItemIcon<&espgui::icons::back>>>();
+            constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_BACK>, PopScreenAction, StaticMenuItemIcon<&espgui::icons::back, &espgui::icons::back_grey>>>();
         }
 
-        std::string text() const override
+        std::string title() const override
         {
-            return fmt::format("Select {}", m_config->nvsName());
+            return std::format("Select {}", m_config->nvsName());
         }
 
         void back() override

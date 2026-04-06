@@ -241,7 +241,7 @@ BLEScanStatus status()
     return _status;
 }
 
-class BLEScanCallback : public NimBLEAdvertisedDeviceCallbacks
+class BLEScanCallback : public NimBLEScanCallbacks
 {
 public:
     void onResult(NimBLEAdvertisedDevice *advertisedDevice) override
@@ -274,7 +274,7 @@ void startScan()
     scan_count = 0;
 
     auto *pScan = NimBLEDevice::getScan();
-    pScan->setAdvertisedDeviceCallbacks(new BLEScanCallback());
+    pScan->setScanCallbacks(new BLEScanCallback());
     pScan->setActiveScan(true);
     pScan->setInterval(100);
     pScan->setWindow(50);
@@ -285,7 +285,7 @@ void startScan()
     pScan->start(5);
     pScan->clearResults();
 
-    ESP_LOGI(TAG, "Scanning done, found %u available devices (%u found)", scan_results.size(), scan_count);
+    ESP_LOGI(TAG, "Scanning done, found %u available devices (%lu found)", scan_results.size(), scan_count);
 
     _status = BLEScanStatus::Done;
 }

@@ -2,8 +2,9 @@ constexpr const char * const TAG = "ANALOG_STICKS";
 #include "analog_sticks.h"
 
 // esp-idf includes
-#include <esp32-hal-adc.h>
-#include <esp32-hal-gpio.h>
+#include "esp32-hal-gpio.h"
+#include <esp_adc/adc_cali.h>
+#include <esp_adc/adc_oneshot.h>
 #include <esp_log.h>
 
 // local includes
@@ -23,10 +24,26 @@ analog_stick_t right_stick;
 namespace {
 bool last_left_state;
 bool last_right_state;
+
+adc_oneshot_unit_handle_t adc1_handle;
+
+adc_unit_t adc_unit = ADC_UNIT_1;
+
+adc_channel_t ADC_CHANNEL_LEFT_X;
+adc_channel_t ADC_CHANNEL_LEFT_Y;
+
+adc_channel_t ADC_CHANNEL_RIGHT_X;
+adc_channel_t ADC_CHANNEL_RIGHT_Y;
 } // namespace
 
 void init()
 {
+    adc_oneshot_io_to_channel(pins::left_x, &adc_unit, &ADC_CHANNEL_LEFT_X);
+    adc_oneshot_io_to_channel(pins::left_y, &adc_unit, &ADC_CHANNEL_LEFT_Y);
+    adc_oneshot_io_to_channel(pins::right_x, &adc_unit, &ADC_CHANNEL_RIGHT_X);
+    adc_oneshot_io_to_channel(pins::right_y, &adc_unit, &ADC_CHANNEL_RIGHT_Y);
+
+
     left_stick = analog_stick_t{
         .raw_x = std::nullopt,
         .raw_y = std::nullopt,
@@ -43,13 +60,29 @@ void init()
         .btn_pressed = std::nullopt
     };
 
-    pinMode(pins::left_x,   INPUT);
-    pinMode(pins::left_y,   INPUT);
     pinMode(pins::left_btn, INPUT_PULLUP);
-
-    pinMode(pins::right_x,   INPUT);
-    pinMode(pins::right_y,   INPUT);
     pinMode(pins::right_btn, INPUT_PULLUP);
+
+    // analog reads
+    adc_oneshot_unit_init_cfg_t init_config1 = {
+        .unit_id = ADC_UNIT_1,
+        .ulp_mode = ADC_ULP_MODE_DISABLE,
+    };
+    if (const auto result = adc_oneshot_new_unit(&init_config1, &adc1_handle); result != ESP_OK)
+        ESP_LOGE(TAG, "adc_oneshot_new_unit() failed with %s", esp_err_to_name(result));
+
+    adc_oneshot_chan_cfg_t config = {
+        .atten = ADC_ATTEN_DB_11,
+        .bitwidth = ADC_BITWIDTH_DEFAULT,
+    };
+    if (const auto result = adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_LEFT_X, &config); result != ESP_OK)
+        ESP_LOGE(TAG, "adc_oneshot_config_channel() failed with %s", esp_err_to_name(result));
+    if (const auto result = adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_LEFT_Y, &config); result != ESP_OK)
+        ESP_LOGE(TAG, "adc_oneshot_config_channel() failed with %s", esp_err_to_name(result));
+    if (const auto result = adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_RIGHT_X, &config); result != ESP_OK)
+        ESP_LOGE(TAG, "adc_oneshot_config_channel() failed with %s", esp_err_to_name(result));
+    if (const auto result = adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_RIGHT_Y, &config); result != ESP_OK)
+        ESP_LOGE(TAG, "adc_oneshot_config_channel() failed with %s", esp_err_to_name(result));
 
     last_left_state = false;
     last_right_state = false;
@@ -59,13 +92,16 @@ void init()
 
 void update()
 {
-    [[maybe_unused]]
-    constexpr auto sampleMultipleTimes = [](uint8_t pin){
-        analogRead(pin);
-        float sum{};
+    constexpr auto sampleMultipleTimes = [](adc_channel_t channel){
+        int sum{};
         const auto sampleCount = configs.sampleCount.value();
-        for (uint8_t i = 0; i < sampleCount; i++)
-            sum += analogRead(pin);
+        for (int i = 0; i < sampleCount; i++)
+        {
+            int value;
+            if (const auto result = adc_oneshot_read(adc1_handle, channel, &value); result != ESP_OK)
+                ESP_LOGE(TAG, "adc_oneshot_read_channel() failed with %s", esp_err_to_name(result));
+            sum += value;
+        }
         return sum / sampleCount;
     };
 
@@ -82,16 +118,16 @@ void update()
     };
 
     if (!left_stick.raw_x)
-        left_stick.raw_x = sampleMultipleTimes(pins::left_x);
+        left_stick.raw_x = sampleMultipleTimes(ADC_CHANNEL_LEFT_X);
     if (!left_stick.raw_y)
-        left_stick.raw_y = sampleMultipleTimes(pins::left_y);
+        left_stick.raw_y = sampleMultipleTimes(ADC_CHANNEL_LEFT_Y);
     if (!left_stick.btn_pressed)
         left_stick.btn_pressed = !digitalRead(pins::left_btn);
 
     if (!right_stick.raw_x)
-        right_stick.raw_x = sampleMultipleTimes(pins::right_x);
+        right_stick.raw_x = sampleMultipleTimes(ADC_CHANNEL_RIGHT_X);
     if (!right_stick.raw_y)
-        right_stick.raw_y = sampleMultipleTimes(pins::right_y);
+        right_stick.raw_y = sampleMultipleTimes(ADC_CHANNEL_RIGHT_Y);
     if (!right_stick.btn_pressed)
         right_stick.btn_pressed = !digitalRead(pins::right_btn);
 

@@ -1,7 +1,6 @@
 constexpr const char * const TAG = "BOBBY_REMOTE";
 
 // esp-idf includes
-#include <esp32-hal-gpio.h>
 #include <esp_log.h>
 #include <esp_pm.h>
 #include <esp_system.h>
@@ -30,24 +29,19 @@ extern "C" void app_main()
         boot_gamecontroller = false;
     }
 
-    pinMode(PIN_LED_BACKLIGHT, OUTPUT);
-    digitalWrite(PIN_LED_BACKLIGHT, LOW);
-
-    display::init();
-
-    bootLabel.redraw("settings");
-
     if (const auto result = configs.init("bobbyremote"); result != ESP_OK)
         ESP_LOGE(TAG, "config_init_settings() failed with %s", esp_err_to_name(result));
 
-    bootLabel.redraw("analog_sticks");
+    display::init();
+
+    display::set_boot_msg("analog_sticks");
 
     analog_sticks::read_buttons();
 
     for (const auto &task : schedulerTasks)
     {
         ESP_LOGI(TAG, "Init task %s", task.name());
-        bootLabel.redraw(task.name());
+        display::set_boot_msg(task.name());
         task.setup();
     }
 
@@ -82,8 +76,6 @@ extern "C" void app_main()
 
     while (true)
     {
-        const auto now = espchrono::millis_clock::now();
-
         for (auto &schedulerTask : schedulerTasks)
         {
             schedulerTask.loop();

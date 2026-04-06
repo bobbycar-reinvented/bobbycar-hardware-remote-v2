@@ -14,8 +14,8 @@ class CalibrateAnalogStickScreen : public BobbyDisplay
 public:
     explicit CalibrateAnalogStickScreen(bool from_boot = false);
 
-    void initScreen() override;
-    void redraw() override;
+    void initScreen(espgui::TftInterface &tft) override;
+    void redraw(espgui::TftInterface &tft) override;
     void update() override;
 
     void buttonPressed(espgui::Button button) override;

@@ -4,14 +4,11 @@
 #define LOG_LOCAL_LEVEL CONFIG_LOG_LOCAL_LEVEL_CONFIG
 
 // system includes
-#include <utility>
 #include <cassert>
+#include <expected>
 
 // esp-idf includes
 #include <esp_log.h>
-
-// 3rdparty lib includes
-#include <fmt/core.h>
 
 // local includes
 #include "configwrapper.h"
@@ -150,7 +147,7 @@ namespace espconfig {
         }
 
         if (result != ESP_OK)
-            return tl::make_unexpected(std::string{"nvs_erase_key() failed with "} + esp_err_to_name(result));
+            return std::unexpected(std::string{"nvs_erase_key() failed with "} + esp_err_to_name(result));
 
         return {};
     }
@@ -170,7 +167,7 @@ namespace espconfig {
         m_touched = true;
 
         if (result != ESP_OK)
-            return tl::make_unexpected(std::string{"nvs_set() failed with "} + esp_err_to_name(result));
+            return std::unexpected(std::string{"nvs_set() failed with "} + esp_err_to_name(result));
         return {};
     }
 

@@ -1,7 +1,9 @@
 #include "blescanmenu.h"
 
+// system includes
+#include <format>
+
 // 3rdparty lib includes
-#include <fmt/core.h>
 #include <menuitem.h>
 #include <screenmanager.h>
 
@@ -19,7 +21,7 @@ public:
     void setDevice(NimBLEAdvertisedDevice& device)
         { m_device = device; }
 
-    const espgui::MenuItemIcon *icon() const override
+    const espgui::MenuItemIcon *icon(bool selected) const override
     {
         return &bobbyicons::presets;
     }
@@ -46,12 +48,12 @@ std::string BleScanMenuItem::text() const
     return "You found a bug!";
 }
 
-[[nodiscard]] std::string BleScanMenu::text() const
+std::string BleScanMenu::title() const
 {
     switch (ble::status())
     {
     case ble::BLEScanStatus::Done:
-        return fmt::format("Scan complete ({} found)", ble::bobbycars_found());
+        return std::format("Scan complete ({} found)", ble::bobbycars_found());
     case ble::BLEScanStatus::Idle:
         return "Idle";
     case ble::BLEScanStatus::Scanning:
@@ -70,10 +72,10 @@ void BleScanMenu::back()
     espgui::popScreen();
 }
 
-void BleScanMenu::initScreen()
+void BleScanMenu::initScreen(espgui::TftInterface &tft)
 {
-    Base::initScreen();
-    Base::redraw();
+    Base::initScreen(tft);
+    Base::redraw(tft);
 
     ble::startScan();
     m_results_updated = false;

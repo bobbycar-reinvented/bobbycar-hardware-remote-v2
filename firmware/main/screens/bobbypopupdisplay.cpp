@@ -1,4 +1,4 @@
-#include "bobbypopupscreen.h"
+#include "bobbypopupdisplay.h"
 
 // local includes
 #include "bobbybuttons.h"

@@ -3,58 +3,58 @@
 	url = ../../sad-electronics/wch-kicad-lbr.git
 [submodule "firmware/components/esp-gui-lib"]
 	path = firmware/components/esp-gui-lib
-	url = ../../0xFEEDC0DE64/esp-gui-lib.git
+	url = ../../CommanderRedYT/esp-gui-lib.git
 [submodule "firmware/esp-idf"]
 	path = firmware/esp-idf
-	url = ../../0xFEEDC0DE64/esp-idf.git
-[submodule "firmware/components/expected"]
-	path = firmware/components/expected
-	url = ../../0xFEEDC0DE64/expected.git
-[submodule "firmware/components/fmt"]
-	path = firmware/components/fmt
-	url = ../../0xFEEDC0DE64/fmt.git
+	url = ../../CommanderRedYT/esp-idf.git
 [submodule "firmware/components/ArduinoJson"]
 	path = firmware/components/ArduinoJson
-	url = ../../0xFEEDC0DE64/ArduinoJson.git
+	url = ../../CommanderRedYT/ArduinoJson.git
 [submodule "firmware/components/TFT_eSPI"]
 	path = firmware/components/TFT_eSPI
-	url = ../../0xFEEDC0DE64/TFT_eSPI.git
+	url = ../../CommanderRedYT/TFT_eSPI.git
 [submodule "firmware/components/arduino-esp32"]
 	path = firmware/components/arduino-esp32
-	url = ../../0xFEEDC0DE64/arduino-esp32.git
+	url = ../../CommanderRedYT/arduino-esp32.git
 [submodule "firmware/components/cpputils"]
 	path = firmware/components/cpputils
-	url = ../../0xFEEDC0DE64/cpputils.git
+	url = ../../CommanderRedYT/cpputils.git
 [submodule "firmware/components/esp-nimble-cpp"]
 	path = firmware/components/esp-nimble-cpp
-	url = ../../0xFEEDC0DE64/esp-nimble-cpp.git
+	url = ../../CommanderRedYT/esp-nimble-cpp.git
 [submodule "firmware/components/espchrono"]
 	path = firmware/components/espchrono
-	url = ../../0xFEEDC0DE64/espchrono.git
+	url = ../../CommanderRedYT/espchrono.git
 [submodule "firmware/components/espconfiglib"]
 	path = firmware/components/espconfiglib
-	url = ../../0xFEEDC0DE64/espconfiglib.git
+	url = ../../CommanderRedYT/espconfiglib.git
 [submodule "firmware/components/espcpputils"]
 	path = firmware/components/espcpputils
-	url = ../../0xFEEDC0DE64/espcpputils.git
+	url = ../../CommanderRedYT/espcpputils.git
 [submodule "firmware/components/esphttpdutils"]
 	path = firmware/components/esphttpdutils
-	url = ../../0xFEEDC0DE64/esphttpdutils.git
+	url = ../../CommanderRedYT/esphttpdutils.git
 [submodule "firmware/components/espwifistack"]
 	path = firmware/components/espwifistack
-	url = ../../0xFEEDC0DE64/espwifistack.git
+	url = ../../CommanderRedYT/espwifistack.git
 [submodule "firmware/esp-protocols"]
 	path = firmware/esp-protocols
-	url = ../../0xFEEDC0DE64/esp-protocols.git
+	url = ../../espressif/esp-protocols.git
 [submodule "firmware/components/date"]
 	path = firmware/components/date
-	url = ../../0xFEEDC0DE64/date.git
+	url = ../../CommanderRedYT/date.git
 [submodule "firmware/components/QRCode-esp32"]
 	path = firmware/components/QRCode-esp32
-	url = ../../bobbycar-graz/QRCode-esp32.git
+	url = ../../CommanderRedYT/QRCode-esp32.git
 [submodule "firmware/components/cxx-ring-buffer"]
 	path = firmware/components/cxx-ring-buffer
-	url = ../../0xFEEDC0DE64/cxx-ring-buffer.git
+	url = ../../CommanderRedYT/cxx-ring-buffer.git
 [submodule "firmware/components/ESP32-BLE-Gamepad-idf"]
 	path = firmware/components/ESP32-BLE-Gamepad-idf
 	url = ../../CommanderRedYT/ESP32-BLE-Gamepad-idf.git
+[submodule "firmware/components/esptftlib"]
+	path = firmware/components/esptftlib
+	url = git@github.com:CommanderRedYT/esptftlib.git
+[submodule "firmware/components/espfontlib"]
+	path = firmware/components/espfontlib
+	url = git@github.com:CommanderRedYT/espfontlib.git

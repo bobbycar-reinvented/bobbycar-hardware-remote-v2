@@ -2,11 +2,11 @@
 
 // esp-idf includes
 #include <esp_log.h>
+#include <format>
 
 // 3rdparty lib includes
-#include <fmt/core.h>
+#include <fontrenderer.h>
 #include <screenmanager.h>
-#include <tftinstance.h>
 
 // local lib includes
 #include "analog_sticks.h"
@@ -19,7 +19,7 @@ namespace {
 constexpr const char * const TAG = "CALIBRATE_ANALOG_STICKS";
 } // namespace
 
-CalibrateAnalogStickScreen::CalibrateAnalogStickScreen(bool from_boot) :
+CalibrateAnalogStickScreen::CalibrateAnalogStickScreen(const bool from_boot) :
     m_left_x_min{4095},
     m_left_x_max{0},
     m_left_x_mid{2000},
@@ -35,9 +35,9 @@ CalibrateAnalogStickScreen::CalibrateAnalogStickScreen(bool from_boot) :
     m_from_boot{from_boot}
 {}
 
-void CalibrateAnalogStickScreen::initScreen()
+void CalibrateAnalogStickScreen::initScreen(espgui::TftInterface &tft)
 {
-    Base::initScreen();
+    Base::initScreen(tft);
 
     m_left_x_min = 4095;
     m_left_x_mid = 2000;
@@ -53,28 +53,28 @@ void CalibrateAnalogStickScreen::initScreen()
     m_right_y_mid = 2000;
     m_right_y_max = 0;
 
-    espgui::tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    espgui::FontRenderer renderer{tft};
 
-    espgui::tft.drawString("Press Stick to save middles.", 10,  5);
-    espgui::tft.drawString("Press OK to save min/max.", 10, 40);
+    renderer.drawString("Press Stick to save middles.", 10, 5, espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    renderer.drawString("Press RIGHT to save min/max.", 10, 40, espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
 
-    m_label_leftx_stick.start();
-    m_label_lefty_stick.start();
-    m_label_rightx_stick.start();
-    m_label_righty_stick.start();
-    m_label_status.start();
+    m_label_leftx_stick.start(tft);
+    m_label_lefty_stick.start(tft);
+    m_label_rightx_stick.start(tft);
+    m_label_righty_stick.start(tft);
+    m_label_status.start(tft);
 }
 
-void CalibrateAnalogStickScreen::redraw()
+void CalibrateAnalogStickScreen::redraw(espgui::TftInterface &tft)
 {
     using namespace analog_sticks;
-    Base::redraw();
+    Base::redraw(tft);
 
-    m_label_leftx_stick.redraw(fmt::format( "&sLX Min:&m {} &sMax:&m {} &sMid:&m {}", m_left_x_min,  m_left_x_max,  m_left_x_mid));
-    m_label_lefty_stick.redraw(fmt::format( "&sLY Min:&m {} &sMax:&m {} &sMid:&m {}", m_left_y_min,  m_left_y_max,  m_left_y_mid));
-    m_label_rightx_stick.redraw(fmt::format("&sRX Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_x_min, m_right_x_max, m_right_x_mid));
-    m_label_righty_stick.redraw(fmt::format("&sRY Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_y_min, m_right_y_max, m_right_y_mid));
-    m_label_status.redraw(fmt::format("{}", (has_raw_values(left_stick) && has_raw_values(right_stick)) ? "Ready" : "No raw values"));
+    m_label_leftx_stick.redraw(tft, std::format( "&sLX Min:&m {} &sMax:&m {} &sMid:&m {}", m_left_x_min,  m_left_x_max,  m_left_x_mid), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    m_label_lefty_stick.redraw(tft, std::format( "&sLY Min:&m {} &sMax:&m {} &sMid:&m {}", m_left_y_min,  m_left_y_max,  m_left_y_mid), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    m_label_rightx_stick.redraw(tft, std::format("&sRX Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_x_min, m_right_x_max, m_right_x_mid), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    m_label_righty_stick.redraw(tft, std::format("&sRY Min:&m {} &sMax:&m {} &sMid:&m {}", m_right_y_min, m_right_y_max, m_right_y_mid), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    m_label_status.redraw(tft, std::format("{}", (has_raw_values(left_stick) && has_raw_values(right_stick)) ? "Ready" : "No raw values"), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
 }
 
 void CalibrateAnalogStickScreen::update()

@@ -9,8 +9,8 @@ file(
 set(dependencies
     freertos nvs_flash esp_http_server mdns esp_system driver
     arduino-esp32 ArduinoJson esp-nimble-cpp TFT_eSPI QRCode-esp32
-    cpputils cxx-ring-buffer date
-    espchrono espcpputils espconfiglib esp-gui-lib esphttpdutils espwifistack expected fmt ESP32-BLE-Gamepad-idf
+    cpputils cxx-ring-buffer date esp_adc
+    espchrono espcpputils espconfiglib esp-gui-lib esphttpdutils espwifistack esptftlib ESP32-BLE-Gamepad-idf
 )
 
 idf_component_register(

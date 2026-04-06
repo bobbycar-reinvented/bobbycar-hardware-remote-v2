@@ -1,7 +1,8 @@
 #pragma once
 
 // 3rdparty lib includes
-#include <tftinstance.h>
+#include <tftcolors.h>
+#include <tftinterface.h>
 #include <widgets/label.h>
 
 // local includes
@@ -20,25 +21,25 @@ template<uint16_t x, uint16_t y>
 class DrawDpad
 {
 public:
-    void start();
-    void redraw(Direction highlight);
+    void start(espgui::TftInterface &tft);
+    void redraw(espgui::TftInterface &tft, Direction highlight);
 private:
     Direction m_last_direction{None};
 };
 
 template<uint16_t x, uint16_t y>
-void DrawDpad<x,y>::start()
+void DrawDpad<x,y>::start(espgui::TftInterface &tft)
 {
     using namespace espgui;
 
-    tft.drawCircle(x - 35, y, 20, TFT_WHITE);
-    tft.drawCircle(x + 35, y, 20, TFT_WHITE);
-    tft.drawCircle(x, y - 35, 20, TFT_WHITE);
-    tft.drawCircle(x, y + 35, 20, TFT_WHITE);
+    tft.drawCircle(x - 35, y, 20, espgui::TFT_WHITE);
+    tft.drawCircle(x + 35, y, 20, espgui::TFT_WHITE);
+    tft.drawCircle(x, y - 35, 20, espgui::TFT_WHITE);
+    tft.drawCircle(x, y + 35, 20, espgui::TFT_WHITE);
 }
 
 template<uint16_t x, uint16_t y>
-void DrawDpad<x,y>::redraw(Direction highlight)
+void DrawDpad<x,y>::redraw(espgui::TftInterface &tft, Direction highlight)
 {
     using namespace espgui;
 
@@ -53,11 +54,11 @@ class ButtonMapScreen : public BobbyDisplayWithTitle
 {
     using Base = BobbyDisplayWithTitle;
 public:
-    void initScreen() override;
+    void initScreen(espgui::TftInterface &tft) override;
     void update() override;
-    void redraw() override;
+    void redraw(espgui::TftInterface &tft) override;
 
-    std::string text() const override;
+    std::string title() const override;
 
     void buttonPressed(espgui::Button button) override;
     void buttonReleased(espgui::Button button) override;

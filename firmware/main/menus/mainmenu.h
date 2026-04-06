@@ -9,7 +9,7 @@ class MainMenu : public BobbyMenuDisplay
 public:
     MainMenu();
 
-    [[nodiscard]] std::string text() const override;
+    std::string title() const override;
 
     void back() override;
 };

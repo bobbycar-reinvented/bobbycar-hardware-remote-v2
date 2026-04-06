@@ -2,13 +2,16 @@
 
 // 3rdparty lib includes
 #include <screenmanager.h>
+#include <tftinterface.h>
 
 // local includes
-#include "screens/bobbypopupscreen.h"
+#include "screens/bobbypopupdisplay.h"
 
 void BobbyErrorHandler::errorOccurred(std::string &&error)
 {
-    auto newDisplay = std::make_unique<BobbyPopupDisplay>(std::move(error), std::move(espgui::currentDisplay));
-    newDisplay->initOverlay();
-    espgui::currentDisplay = std::move(newDisplay);
+    espgui::changeScreenCallback = [error_ = std::move(error)](espgui::TftInterface &tft){
+        auto newDisplay = std::make_unique<BobbyPopupDisplay>(std::string{error_}, std::move(espgui::currentDisplay));
+        newDisplay->initOverlay(tft);
+        espgui::currentDisplay = std::move(newDisplay);
+    };
 }

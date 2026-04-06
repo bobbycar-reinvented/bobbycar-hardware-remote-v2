@@ -11,16 +11,16 @@ constexpr const char * const TAG = "BUTTON_CALIBRATION";
 #include "screens/statusscreen.h"
 #include "settings.h"
 
-void ButtonMapScreen::initScreen()
+void ButtonMapScreen::initScreen(espgui::TftInterface &tft)
 {
     using namespace espgui;
 
-    Base::initScreen();
+    Base::initScreen(tft);
 
-    m_dpad_left.start();
-    m_dpad_right.start();
+    m_dpad_left.start(tft);
+    m_dpad_right.start(tft);
 
-    m_label.start();
+    m_label.start(tft);
 }
 
 void ButtonMapScreen::update()
@@ -28,54 +28,54 @@ void ButtonMapScreen::update()
     Base::update();
 }
 
-void ButtonMapScreen::redraw()
+void ButtonMapScreen::redraw(espgui::TftInterface &tft)
 {
-    Base::redraw();
+    Base::redraw(tft);
 
     switch(m_current_button)
     {
     case 0:
-        m_dpad_left.redraw(UP);
-        m_dpad_right.redraw(None);
+        m_dpad_left.redraw(tft, UP);
+        m_dpad_right.redraw(tft, None);
         break;
     case 1:
-        m_dpad_left.redraw(RIGHT);
-        m_dpad_right.redraw(None);
+        m_dpad_left.redraw(tft, RIGHT);
+        m_dpad_right.redraw(tft, None);
         break;
     case 2:
-        m_dpad_left.redraw(DOWN);
-        m_dpad_right.redraw(None);
+        m_dpad_left.redraw(tft, DOWN);
+        m_dpad_right.redraw(tft, None);
         break;
     case 3:
-        m_dpad_left.redraw(LEFT);
-        m_dpad_right.redraw(None);
+        m_dpad_left.redraw(tft, LEFT);
+        m_dpad_right.redraw(tft, None);
         break;
     case 4:
-        m_dpad_left.redraw(None);
-        m_dpad_right.redraw(UP);
+        m_dpad_left.redraw(tft, None);
+        m_dpad_right.redraw(tft, UP);
         break;
     case 5:
-        m_dpad_left.redraw(None);
-        m_dpad_right.redraw(RIGHT);
+        m_dpad_left.redraw(tft, None);
+        m_dpad_right.redraw(tft, RIGHT);
         break;
     case 6:
-        m_dpad_left.redraw(None);
-        m_dpad_right.redraw(DOWN);
+        m_dpad_left.redraw(tft, None);
+        m_dpad_right.redraw(tft, DOWN);
         break;
     case 7:
-        m_dpad_left.redraw(None);
-        m_dpad_right.redraw(LEFT);
+        m_dpad_left.redraw(tft, None);
+        m_dpad_right.redraw(tft, LEFT);
         break;
     default:
-        m_dpad_left.redraw(None);
-        m_dpad_right.redraw(None);
+        m_dpad_left.redraw(tft, None);
+        m_dpad_right.redraw(tft, None);
 
-        m_label.redraw("Press RIGHT to continue");
+        m_label.redraw(tft, "Press RIGHT to continue", espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
         break;
     }
 }
 
-void ButtonMapScreen::buttonPressed(espgui::Button button)
+void ButtonMapScreen::buttonPressed(const espgui::Button button)
 {
     ESP_LOGI(TAG, "Button %d pressed", std::to_underlying(button));
     // Base::buttonPressed(button);
@@ -95,7 +95,7 @@ void ButtonMapScreen::buttonReleased(espgui::Button button)
     // Base::buttonReleased(button);
 }
 
-void ButtonMapScreen::rawButtonPressed(uint8_t button)
+void ButtonMapScreen::rawButtonPressed(const uint8_t button)
 {
     // Base::rawButtonPressed(button);
     switch(m_current_button)
@@ -175,7 +175,7 @@ void ButtonMapScreen::rawButtonReleased(uint8_t button)
     // Base::rawButtonReleased(button);
 }
 
-std::string ButtonMapScreen::text() const
+std::string ButtonMapScreen::title() const
 {
     return "Button Mapping";
 }

@@ -13,6 +13,7 @@
 // local includes
 #include "actions/bleactions.h"
 #include "icons/scan.h"
+#include "icons/scan_grey.h"
 #include "menus/blescanmenu.h"
 
 namespace {
@@ -25,10 +26,10 @@ BleSettingsMenu::BleSettingsMenu()
     using namespace espgui;
 
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_DEVICES>, PushScreenAction<BleScanMenu>>>();
-    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_START_SCAN>, StartBleScanAction, StaticMenuItemIcon<&bobbyicons::scan>>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_START_SCAN>, StartBleScanAction, StaticMenuItemIcon<&bobbyicons::scan, &bobbyicons::scan_grey>>>();
 }
 
-std::string BleSettingsMenu::text() const
+std::string BleSettingsMenu::title() const
 {
     return "Ble Settings";
 }

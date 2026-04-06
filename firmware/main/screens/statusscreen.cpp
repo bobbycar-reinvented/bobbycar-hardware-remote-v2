@@ -1,11 +1,13 @@
 #include "statusscreen.h"
 
+// system includes
+#include <format>
+
 // 3rdparty lib includes
 #include <cpputils.h>
 #include <espchrono.h>
-#include <fmt/core.h>
+#include <fontrenderer.h>
 #include <screenmanager.h>
-#include <tftinstance.h>
 
 // local lib includes
 #include "analog_sticks.h"
@@ -21,36 +23,37 @@ namespace {
 constexpr auto static_radius = 30;
 constexpr auto distance = 30;
 
-auto left_x_mid   = distance + static_radius;
-auto left_x_start = left_x_mid - static_radius;
-auto left_x_end   = left_x_mid + static_radius;
+int left_x_mid   = distance + static_radius;
+int left_x_start = left_x_mid - static_radius;
+int left_x_end   = left_x_mid + static_radius;
 
 // now the same for right analog stick, but subtract from screen width
-auto right_x_mid = espgui::tft.height() - distance - static_radius;
-auto right_x_start = right_x_mid - static_radius;
-auto right_x_end = right_x_mid + static_radius;
+int right_x_mid = 0; // init later
+int right_x_start = right_x_mid - static_radius;
+int right_x_end = right_x_mid + static_radius;
 
-auto y_mid = espgui::tft.width() - distance - static_radius;
-auto y_start = y_mid - static_radius;
-auto y_end = y_mid + static_radius;
+int y_mid = 0; // init later
+int y_start = y_mid - static_radius;
+int y_end = y_mid + static_radius;
 
 constexpr char TEXT_NOT_CONNECTED[] = "Not connected!";
 } // namespace
 
-void StatusScreen::initScreen()
+void StatusScreen::initScreen(espgui::TftInterface &tft)
 {
-    Base::initScreen();
+    Base::initScreen(tft);
 
-    espgui::tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    right_x_mid = tft.height() - distance - static_radius;
+    y_mid = tft.width() - distance - static_radius;
 
     m_last_left_x = 0;
     m_last_left_y = 0;
     m_last_right_x = 0;
     m_last_right_y = 0;
 
-    m_left_label.start();
-    m_right_label.start();
-    m_stats_label.start();
+    m_left_label.start(tft);
+    m_right_label.start(tft);
+    m_stats_label.start(tft);
 
     clear_needed = true;
 }
@@ -72,29 +75,28 @@ void StatusScreen::update()
     m_right_pressed = *right_stick.btn_pressed;
 }
 
-void StatusScreen::redraw()
+void StatusScreen::redraw(espgui::TftInterface &tft)
 {
     using namespace espgui;
 
-    Base::redraw();
+    espgui::FontRenderer renderer{tft};
+
+    Base::redraw(tft);
 
     if (!ble::isConnected())
     {
         if (clear_needed)
         {
             clear_needed = false;
-            m_left_label.clear();
-            m_right_label.clear();
+            m_left_label.clear(tft, espgui::TFT_BLACK);
+            m_right_label.clear(tft, espgui::TFT_BLACK);
 
-            tft.fillScreen(TFT_BLACK);
+            tft.fillScreen(espgui::TFT_BLACK);
 
-            tft.setTextColor(TFT_RED);
-            const auto fontOffset = tft.textWidth(TEXT_NOT_CONNECTED);
-            tft.drawString(TEXT_NOT_CONNECTED, tft.width() / 2 - 10 - (fontOffset/2), (tft.height()-tft.fontHeight()) / 2);
+            const auto fontOffset = renderer.textWidth(TEXT_NOT_CONNECTED, 4);
+            renderer.drawString(TEXT_NOT_CONNECTED, tft.width() / 2 - 10 - (fontOffset/2), (tft.height()-renderer.fontHeight(4)) / 2, espgui::TFT_RED, espgui::TFT_BLACK, 4);
 
-            tft.setSwapBytes(true);
             tft.pushImage(tft.width() / 2 + (fontOffset/2), (tft.height()-bobbyicons::alert.HEIGHT) / 2, bobbyicons::alert.WIDTH, bobbyicons::alert.HEIGHT, bobbyicons::alert.buffer);
-            tft.setSwapBytes(false);
         }
         return;
     }
@@ -102,49 +104,48 @@ void StatusScreen::redraw()
     {
         if (!clear_needed)
         {
-            tft.fillScreen(TFT_BLACK);
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.fillScreen(espgui::TFT_BLACK);
         }
         clear_needed = true;
     }
 
     if (m_left_x != m_last_left_x || m_left_y != m_last_left_y || m_left_pressed != m_last_left_pressed)
     {
-        tft.fillCircle(m_last_left_x,   m_last_left_y, static_radius-5, TFT_BLACK);
+        tft.fillCircle(m_last_left_x,   m_last_left_y, static_radius-5, espgui::TFT_BLACK);
 
         m_last_left_x = m_left_x;
         m_last_left_y = m_left_y;
         m_last_left_pressed = m_left_pressed;
 
-        tft.fillCircle(m_left_x, m_left_y, static_radius-5, m_left_pressed ? TFT_GREEN : TFT_WHITE);
-        tft.drawCircle( left_x_mid, y_mid, static_radius, TFT_WHITE);
+        tft.fillCircle(m_left_x, m_left_y, static_radius-5, m_left_pressed ? espgui::TFT_GREEN : espgui::TFT_WHITE);
+        tft.drawCircle( left_x_mid, y_mid, static_radius, espgui::TFT_WHITE);
     }
 
     if (m_right_x != m_last_right_x || m_right_y != m_last_right_y || m_right_pressed != m_last_right_pressed)
     {
-        tft.fillCircle(m_last_right_x,   m_last_right_y, static_radius-5, TFT_BLACK);
+        tft.fillCircle(m_last_right_x,   m_last_right_y, static_radius-5, espgui::TFT_BLACK);
 
         m_last_right_x = m_right_x;
         m_last_right_y = m_right_y;
         m_last_right_pressed = m_right_pressed;
 
-        tft.fillCircle(m_right_x, m_right_y, static_radius-5, m_right_pressed ? TFT_GREEN : TFT_WHITE);
-        tft.drawCircle( right_x_mid, y_mid, static_radius, TFT_WHITE);
+        tft.fillCircle(m_right_x, m_right_y, static_radius-5, m_right_pressed ? espgui::TFT_GREEN : espgui::TFT_WHITE);
+        tft.drawCircle( right_x_mid, y_mid, static_radius, espgui::TFT_WHITE);
     }
 
     if (!has_values(left_stick) || !has_values(right_stick))
         return;
 
-    m_left_label.redraw(fmt::format("left: x={:.2f}, y={:.2f}", *left_stick.x, *left_stick.y));
-    m_right_label.redraw(fmt::format("right: x={:.2f}, y={:.2f}", *right_stick.x, *right_stick.y));
+    m_left_label.redraw(tft, std::format("left: x={:.2f}, y={:.2f}", *left_stick.x, *left_stick.y), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
+    m_right_label.redraw(tft, std::format("right: x={:.2f}, y={:.2f}", *right_stick.x, *right_stick.y), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
 
     if (bobbyStats.valid)
     {
-        m_stats_label.redraw(fmt::format("Speed: {:.2f} km/h - {}ms", bobbyStats.avgSpeed, ble::lastUpdate ? espchrono::ago(*ble::lastUpdate) / 1ms : 0));
+        m_stats_label.redraw(tft, std::format("Speed: {:.2f} km/h - {}ms", bobbyStats.avgSpeed, ble::lastUpdate ? espchrono::ago(*ble::lastUpdate) / 1ms : 0), espgui::TFT_WHITE, espgui::TFT_BLACK, 4);
     }
 }
 
-void StatusScreen::buttonPressed(espgui::Button button)
+void StatusScreen::buttonPressed(const espgui::Button button)
 {
     Base::buttonPressed(button);
 

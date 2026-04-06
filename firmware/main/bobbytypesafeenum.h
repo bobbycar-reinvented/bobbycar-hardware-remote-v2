@@ -1,10 +1,7 @@
 #pragma once
 
-// 3rdparty lib includes
+// 3rd.party lib includes
 #include <cpptypesafeenum.h>
-
-template<typename T>
-struct iterateEnum;
 
 #define DECLARE_BOBBYTYPESAFE_ENUM(Name, Derivation, Values) \
     DECLARE_TYPESAFE_ENUM(Name, Derivation, Values) \

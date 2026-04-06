@@ -1,9 +1,9 @@
 #pragma once
 
 // system includes
-#include <array>
 #include <optional>
 #include <string>
+#include <format>
 
 // 3rdparty lib includes
 #include <configconstraints_base.h>
@@ -12,8 +12,6 @@
 #include <configwrapper.h>
 #include <espchrono.h>
 #include <espwifiutils.h>
-#include <fmt/core.h>
-#include <makearray.h>
 
 // local includes
 #include "enums.h"

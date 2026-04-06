@@ -10,7 +10,6 @@
 // 3rdparty lib includes
 #include <changevaluedisplay_string.h>
 #include <screenmanager.h>
-#include <tftinstance.h>
 
 // local includes
 #include "settings.h"
@@ -124,7 +123,9 @@ void handleNormalChar(char c)
         case 'I':
             if (auto &display = espgui::currentDisplay; display)
             {
-                display->initScreen();
+                espgui::changeScreenCallback = [&](espgui::TftInterface &tft) {
+                    display->initScreen(tft);
+                };
             }
             break;
         case 'q':

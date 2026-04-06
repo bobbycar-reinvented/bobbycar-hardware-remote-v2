@@ -3,6 +3,9 @@
 // system includes
 #include <cstdint>
 
+// 3rdparty lib includes
+#include <tftinterface.h>
+
 namespace gamecontroller {
 void init();
 void update();
