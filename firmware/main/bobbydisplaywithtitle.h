@@ -8,6 +8,8 @@ class BobbyDisplayWithTitle : public espgui::DisplayWithTitle
     using Base = espgui::DisplayWithTitle;
 
 public:
+    void rotaryEvent(espgui::RotaryEvent rotaryEvent) override {};
+
     void rawButtonPressed(uint8_t button) override;
     void rawButtonReleased(uint8_t button) override;
 

@@ -12,6 +12,7 @@
 #include "bobbychangevaluedisplay.h"
 #include "bobbycheckbox.h"
 #include "icons/bluetooth.h"
+#include "icons/bluetooth_grey.h"
 #include "menus/blesettingsmenu.h"
 #include "typesafeenumchangemenu.h"
 
@@ -35,7 +36,7 @@ using namespace espgui;
 
 using DeadbandChangeScreen = espgui::makeComponent<
     BobbyChangeValueDisplay<uint16_t>,
-    espgui::StaticText<TEXT_DEADBAND>,
+    espgui::StaticTitle<TEXT_DEADBAND>,
     DeadBandAccessor,
     espgui::ConfirmActionInterface<espgui::PopScreenAction>,
     espgui::BackActionInterface<espgui::PopScreenAction>
@@ -43,7 +44,7 @@ using DeadbandChangeScreen = espgui::makeComponent<
 
 using FrontSteerChangeMenu = espgui::makeComponent<
         BobbyChangeValueDisplay<int16_t>,
-        espgui::StaticText<TEXT_FRONT_STEER>,
+        espgui::StaticTitle<TEXT_FRONT_STEER>,
         FrontSteerAccessor,
         espgui::ConfirmActionInterface<espgui::PopScreenAction>,
         espgui::BackActionInterface<espgui::PopScreenAction>
@@ -51,7 +52,7 @@ using FrontSteerChangeMenu = espgui::makeComponent<
 
 using BackSteerChangeMenu = espgui::makeComponent<
         BobbyChangeValueDisplay<int16_t>,
-        espgui::StaticText<TEXT_BACK_STEER>,
+        espgui::StaticTitle<TEXT_BACK_STEER>,
         BackSteerAccessor,
         espgui::ConfirmActionInterface<espgui::PopScreenAction>,
         espgui::BackActionInterface<espgui::PopScreenAction>
@@ -59,7 +60,7 @@ using BackSteerChangeMenu = espgui::makeComponent<
 
 using FrontDriveChangeMenu = espgui::makeComponent<
         BobbyChangeValueDisplay<int16_t>,
-        espgui::StaticText<TEXT_FRONT_DRIVE>,
+        espgui::StaticTitle<TEXT_FRONT_DRIVE>,
         FrontDriveAccessor,
         espgui::ConfirmActionInterface<espgui::PopScreenAction>,
         espgui::BackActionInterface<espgui::PopScreenAction>
@@ -67,7 +68,7 @@ using FrontDriveChangeMenu = espgui::makeComponent<
 
 using BackDriveChangeMenu = espgui::makeComponent<
         BobbyChangeValueDisplay<int16_t>,
-        espgui::StaticText<TEXT_BACK_DRIVE>,
+        espgui::StaticTitle<TEXT_BACK_DRIVE>,
         BackDriveAccessor,
         espgui::ConfirmActionInterface<espgui::PopScreenAction>,
         espgui::BackActionInterface<espgui::PopScreenAction>
@@ -92,11 +93,11 @@ SettingsMenu::SettingsMenu()
     constructMenuItem<makeComponent<MenuItem, TextWithHighlightedValueHelper<TEXT_FRONT_DRIVE, FrontDriveAccessor>, PushScreenAction<FrontDriveChangeMenu>>>();
     constructMenuItem<makeComponent<MenuItem, TextWithHighlightedValueHelper<TEXT_BACK_DRIVE, BackDriveAccessor>, PushScreenAction<BackDriveChangeMenu>>>();
 
-    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_BLE_SETTINGS>, PushScreenAction<BleSettingsMenu>, StaticMenuItemIcon<&bobbyicons::bluetooth>>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_BLE_SETTINGS>, PushScreenAction<BleSettingsMenu>, StaticMenuItemIcon<&bobbyicons::bluetooth, &bobbyicons::bluetooth_grey>>>();
     constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_GAMECONTROLLER_BACKLIGHT>, BobbyCheckbox, GamecontrollerBacklightAccessor>>();
 }
 
-std::string SettingsMenu::text() const
+std::string SettingsMenu::title() const
 {
     return "Settings";
 }

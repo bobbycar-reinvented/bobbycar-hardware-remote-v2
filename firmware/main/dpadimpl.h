@@ -2,12 +2,10 @@
 
 // system includes
 #include <array>
-#include <cstdint>
 
 // esp-idf includes
 #include <esp32-hal-gpio.h>
 #include <esp32-hal-misc.h>
-#include <esp_log.h>
 
 // 3rdparty lib includes
 #include <espchrono.h>
@@ -16,7 +14,6 @@
 // local includes
 #include "dualboot.h"
 #include "gamecontroller/gamecontroller.h"
-#include "settings.h"
 
 using namespace std::chrono_literals;
 

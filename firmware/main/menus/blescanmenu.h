@@ -8,10 +8,10 @@ class BleScanMenu : public BobbyMenuDisplay
     using Base = BobbyMenuDisplay;
 
 public:
-    [[nodiscard]] std::string text() const override;
+    std::string title() const override;
     void back() override;
 
-    void initScreen() override;
+    void initScreen(espgui::TftInterface &tft) override;
     void update() override;
 
     void buttonPressed(espgui::Button button) override;

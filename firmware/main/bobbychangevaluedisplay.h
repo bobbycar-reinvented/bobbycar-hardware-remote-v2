@@ -15,6 +15,8 @@ class BobbyChangeValueDisplay :
     using Base = espgui::ChangeValueDisplay<Tvalue>;
 
 public:
+    void rotaryEvent(espgui::RotaryEvent rotaryEvent) override {};
+
     void rawButtonPressed(uint8_t button) override;
     void rawButtonReleased(uint8_t button) override;
 

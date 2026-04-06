@@ -9,16 +9,16 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/config.cmake)
 endif()
 
 include(config.cmake)
-
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_definitions(-DASIO_DISABLE_CONCEPTS=1)
+# add_definitions(-DASIO_DISABLE_CONCEPTS=1)
 
 set(EXTRA_COMPONENT_DIRS
-    esp-protocols/components
+    esp-protocols/components/mdns
+    esp-protocols/components/esp_websocket_client
 )
 
 project(${APP_NAME})
