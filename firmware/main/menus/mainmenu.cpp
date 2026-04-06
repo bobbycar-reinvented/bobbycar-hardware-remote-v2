@@ -45,9 +45,9 @@ MainMenu::MainMenu()
 {
     using namespace espgui;
 
-    // constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_SETTINGS>, StaticMenuItemIcon<&bobbyicons::settings, &bobbyicons::settings_grey>, PushScreenAction<SettingsMenu>>>();
-    // constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_GAMECONTROLLER>, BootIntoGamecontrollerAction>>();
-    // constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_REBOOT>, StaticMenuItemIcon<&bobbyicons::reboot, &bobbyicons::reboot_grey>, RebootAction>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_SETTINGS>, StaticMenuItemIcon<&bobbyicons::settings, &bobbyicons::settings_grey>, PushScreenAction<SettingsMenu>>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_GAMECONTROLLER>, BootIntoGamecontrollerAction>>();
+    constructMenuItem<makeComponent<MenuItem, StaticText<TEXT_REBOOT>, StaticMenuItemIcon<&bobbyicons::reboot, &bobbyicons::reboot_grey>, RebootAction>>();
 }
 
 std::string MainMenu::title() const

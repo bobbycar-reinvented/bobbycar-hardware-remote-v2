@@ -28,7 +28,7 @@ std::vector<NimBLEAdvertisedDevice> scan_results;
 
 namespace {
 uint32_t scan_count{0};
-BLEScanStatus _status;
+auto _status = BLEScanStatus::Idle;
 bool _isConnected;
 bool _triedAutoConnect;
 bool _stats_service_discovered;
@@ -162,28 +162,37 @@ void update()
     else if (!isConnected() && _status == BLEScanStatus::Done && !_triedAutoConnect)
     {
         _triedAutoConnect = true;
+
         const auto saved = configs.reconnectAddress.value();
+
         if (saved.empty())
         {
             ESP_LOGW(TAG, "No saved BLE address, not auto connecting");
             return;
         }
+
         ESP_LOGI(TAG, "Auto connecting to saved BLE address");
 
         bool contains = false;
 
         for (auto &scan_result : scan_results)
         {
+            ESP_LOGI(TAG, "autoconnect scan found: %s", scan_result.toString().c_str());
+
             if (scan_result.getAddress() == saved)
             {
                 contains = true;
+                break;
             }
         }
 
         if (!contains)
+        {
+            ESP_LOGW(TAG, "Unable to find UUID in autoconnect scan");
             return;
+        }
 
-        NimBLEAddress uuid{saved};
+        const NimBLEAddress uuid{saved};
         connect(uuid);
     }
     else if (isConnected() && !_stats_service_discovered && pClient)
@@ -209,7 +218,7 @@ void update()
 
     if (isConnected() && _remote_service_discovered && pRemoteCharacteristic)
     {
-        if (!pRemoteCharacteristic->canWrite())
+        if (!pRemoteCharacteristic->canWriteNoResponse())
         {
             ESP_LOGI(TAG, "Cant write");
             return;

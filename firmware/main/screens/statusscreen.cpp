@@ -23,28 +23,33 @@ namespace {
 constexpr auto static_radius = 30;
 constexpr auto distance = 30;
 
-int left_x_mid   = distance + static_radius;
-int left_x_start = left_x_mid - static_radius;
-int left_x_end   = left_x_mid + static_radius;
+int left_x_mid, left_x_start, left_x_end   = 0;
+int right_x_mid, right_x_start, right_x_end = 0;
+int y_mid, y_start, y_end = 0;
 
-// now the same for right analog stick, but subtract from screen width
-int right_x_mid = 0; // init later
-int right_x_start = right_x_mid - static_radius;
-int right_x_end = right_x_mid + static_radius;
+void update_values(const espgui::TftInterface &tft)
+{
+    left_x_mid   = distance + static_radius;
+    left_x_start = left_x_mid - static_radius;
+    left_x_end   = left_x_mid + static_radius;
 
-int y_mid = 0; // init later
-int y_start = y_mid - static_radius;
-int y_end = y_mid + static_radius;
+    right_x_mid = tft.width() - distance - static_radius;
+    right_x_start = right_x_mid - static_radius;
+    right_x_end = right_x_mid + static_radius;
+
+    y_mid = tft.height() - distance - static_radius;
+    y_start = y_mid - static_radius;
+    y_end = y_mid + static_radius;
+}
 
 constexpr char TEXT_NOT_CONNECTED[] = "Not connected!";
 } // namespace
 
 void StatusScreen::initScreen(espgui::TftInterface &tft)
 {
-    Base::initScreen(tft);
+    update_values(tft);
 
-    right_x_mid = tft.height() - distance - static_radius;
-    y_mid = tft.width() - distance - static_radius;
+    Base::initScreen(tft);
 
     m_last_left_x = 0;
     m_last_left_y = 0;
@@ -78,6 +83,8 @@ void StatusScreen::update()
 void StatusScreen::redraw(espgui::TftInterface &tft)
 {
     using namespace espgui;
+
+    update_values(tft);
 
     espgui::FontRenderer renderer{tft};
 
